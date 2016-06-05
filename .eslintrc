@@ -1,0 +1,27 @@
+{
+  "extends": ["rackt"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "eol-last": 1,
+    "valid-jsdoc": 0,
+    "indent": 1,
+    "semi": 1,
+    "strict": [1, "global"],
+    "no-console": 0,
+    "no-undef": 2,
+    "no-unused-vars": 1,
+    "comma-dangle": [1, "always-multiline"],
+    "array-bracket-spacing": [1, "never"],
+    "object-curly-spacing": [1, "always"],
+    "no-multiple-empty-lines": [1, { max: 2 }],
+    'react/jsx-uses-react': 2,
+    'react/jsx-uses-vars': 2
+  }
+}

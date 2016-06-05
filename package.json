@@ -1,0 +1,45 @@
+{
+  "name": "treex",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app/main.js",
+  "scripts": {
+    "dev": "webpack -w --progress --config webpack.config.js"
+  },
+  "devDependencies": {
+    "babel-core": "^6.5.2",
+    "babel-eslint": "^6.0.0",
+    "babel-loader": "^6.2.3",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-async-to-bluebird": "^1.0.0",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "copy-webpack-plugin": "^1.1.1",
+    "css-loader": "^0.23.1",
+    "electron-prebuilt": "^1.1.1",
+    "eslint": "^2.5.3",
+    "eslint-config-rackt": "^1.1.1",
+    "eslint-config-xo-react": "^0.4.0",
+    "eslint-friendly-formatter": "^1.2.2",
+    "eslint-loader": "^1.3.0",
+    "eslint-plugin-react": "^3.16.1",
+    "eventsource-polyfill": "^0.9.6",
+    "html-webpack-plugin": "^2.10.0",
+    "http-proxy-middleware": "^0.13.0",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.4.2",
+    "redux-devtools": "^3.1.1",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.12.13",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-hot-middleware": "^2.10.0",
+    "webpack-merge": "^0.8.4",
+    "webpack-notifier": "^1.2.1"
+  },
+  "engines": {
+    "electron": "1.1.1"
+  }
+}

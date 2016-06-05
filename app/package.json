@@ -1,0 +1,28 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lowdb": "^0.13.0-beta-5",
+    "material-ui": "^0.15.0",
+    "nodegit": "^0.13.0",
+    "react": "^15.0.0",
+    "react-dom": "^0.14.7",
+    "react-redux": "^4.4.1",
+    "react-refetch": "^1.0.0-beta.4",
+    "react-router": "^2.0.1",
+    "react-router-redux": "^4.0.0",
+    "redux": "^3.5.2",
+    "redux-devtools": "^3.3.1",
+    "whatwg-fetch": "^0.11.0"
+  },
+  "engines": {
+    "electron": "1.1.1"
+  }
+}
