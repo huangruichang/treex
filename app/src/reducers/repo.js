@@ -6,6 +6,8 @@ import {
 
 const initalState = {
   histories: [],
+  historiesCurrentCommit: undefined,
+  historiesHeadCommit: undefined,
 }
 
 export default (state = initalState, action) => {
@@ -16,10 +18,11 @@ export default (state = initalState, action) => {
         repo: action.repo,
       }
     case LOAD_HISTORIES:
-      console.log(action.histories)
       return {
         ...state,
-        histories: action.histories,
+        histories: state.histories.concat(action.histories),
+        historiesCurrentCommit: action.currentCommit,
+        historiesHeadCommit: action.headCommit || state.historiesHeadCommit
       }
     default:
       return state

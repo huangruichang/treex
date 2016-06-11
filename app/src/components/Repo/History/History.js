@@ -1,6 +1,8 @@
 
 import React, { Component, PropTypes } from 'react'
 
+const styles = require('./history.scss')
+
 export default class History extends Component {
 
   static propTypes = {
@@ -14,13 +16,23 @@ export default class History extends Component {
     super(props)
   }
 
+  getZhTime(date) {
+    const _date = new Date(date)
+    const meridiem  = _date.getHours() < 12 ? ' 上午' : '下午'
+    const hours = _date.getHours() < 12 ? _date.getHours() : _date.getHours() - 12
+    const dateStr = `${_date.getFullYear()}年${_date.getMonth()}月${_date.getDay()}日 ${meridiem}${hours}:${_date.getMinutes()}`
+    return dateStr
+  }
+
   render() {
+    console.log(styles)
+    const date = this.getZhTime(this.props.date)
     return (
-      <div>
-        <span>{this.props.desc}</span>
-        <span>{this.props.commitId}</span>
-        <span>{this.props.author}</span>
-        <span>{this.props.date}</span>
+      <div className={styles.historyItem}>
+        <div className={styles.grid}>{this.props.desc}</div>
+        <div className={`${styles.grid} ${styles.commitId} ${styles.ellipsis}`}>{this.props.commitId}</div>
+        <div className={styles.grid}>{this.props.author}</div>
+        <div className={styles.grid}>{date}</div>
       </div>
     )
   }

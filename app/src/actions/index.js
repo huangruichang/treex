@@ -110,42 +110,75 @@ export const openRepo = (projectName) => {
   win.show()
 }
 
-export const loadHistories = (repo) => {
+const HISTORIES_LIMIT = 100
+
+export const initHistories = (repo) => {
   return dispatch => {
     repo.getHeadCommit().then((commit) => {
-      const eventEmitter = commit.history()
-      eventEmitter.on('end', (commits) => {
-        const histories = []
-
-        for (let value of commits) {
-          //console.log(value.sha())
-          const history = {
-            desc: value.message(),
-            author: value.author().toString(),
-            commitId: value.sha(),
-            date: value.date().toString(),
-          }
-          histories.push(history)
-        }
-        dispatch({
-          type: LOAD_HISTORIES,
-          histories: histories,
-        })
-      })
-      eventEmitter.on('error', (error) => {
-        console.log(error)
-        dispatch({
-          type: LOAD_HISTORIES_FAIL,
-          msg: error,
-        })
-      })
-      eventEmitter.start()
+      historiesHandler(commit, dispatch, true)
     }).catch((e) => {
-      console.log(e)
       dispatch({
         type: LOAD_HISTORIES_FAIL,
         msg: e,
       })
     })
   }
+}
+
+export const loadHistories = (commit) => {
+  return dispatch => {
+    historiesHandler(commit, dispatch)
+  }
+}
+
+const historiesHandler = (commit ,dispatch, init) => {
+  const headCommit = commit
+  const eventEmitter = commit.history()
+  const histories = []
+  let flag = false
+  let currentCommit
+  eventEmitter.on('commit', (commit) => {
+    if (histories.length < HISTORIES_LIMIT || flag) {
+      const history = {
+        desc: commit.message(),
+        author: commit.author().toString(),
+        commitId: commit.id().toString(),
+        date: commit.date().toString(),
+      }
+      histories.push(history)
+      currentCommit = commit
+    } else {
+      const action = {
+        type: LOAD_HISTORIES,
+        histories: histories,
+        currentCommit: currentCommit,
+      }
+      if (init) {
+        action.headCommit = headCommit
+      }
+      dispatch(action)
+      flag = true
+    }
+  })
+  eventEmitter.on('end', () => {
+    if (histories.length <= HISTORIES_LIMIT) {
+      const action = {
+        type: LOAD_HISTORIES,
+        histories: histories,
+        currentCommit: currentCommit,
+      }
+      if (init) {
+        action.headCommit = headCommit
+      }
+      dispatch(action)
+    }
+  })
+  eventEmitter.on('error', (error) => {
+    console.log(error)
+    dispatch({
+      type: LOAD_HISTORIES_FAIL,
+      msg: error,
+    })
+  })
+  eventEmitter.start()
 }

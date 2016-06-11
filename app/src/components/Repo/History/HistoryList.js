@@ -3,15 +3,8 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import History from './History'
 
-const mapStateToProps = (state) => {
-  return {
-    histories: state.repo.histories,
-  }
-}
+const styles = require('./history.scss')
 
-@connect(
-  mapStateToProps
-)
 export default class HistoryList extends Component {
 
   static propTypes = {
@@ -24,7 +17,13 @@ export default class HistoryList extends Component {
 
   render() {
     return (
-      <div>
+      <div className={styles.historyList}>
+        <div className={styles.th}>
+          <div className={styles.grid}>描述</div>
+          <div className={styles.grid}>提交</div>
+          <div className={styles.grid}>作者</div>
+          <div className={styles.grid}>日期</div>
+        </div>
         {this.props.histories.map((obj, index) => {
           return <History
                     desc={obj.desc}
