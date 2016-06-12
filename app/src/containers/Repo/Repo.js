@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { HistoryList, SideBar, Graph } from '../../components'
-import { loadRepo, initHistories } from '../../actions'
+import { loadRepo, initHistories, initSideBar } from '../../actions'
 
 const styles = require('./Repo.scss')
 
@@ -12,6 +12,7 @@ const mapStateToProps = (state) => {
     histories: state.repo.histories,
     headCommit: state.repo.historiesHeadCommit,
     currentCommit: state.repo.historiesCurrentCommit,
+    fileModifiedCount: state.repo.fileModifiedCount,
   }
 }
 
@@ -32,10 +33,10 @@ export default class Repo extends Component {
     if (!this.props.repo && !!nextProps.repo) {
       const { repo, store } = nextProps
       store.dispatch(initHistories(repo))
+      store.dispatch(initSideBar(repo))
     }
     if (this.props.histories.length != nextProps.histories.length) {
       const { headCommit, currentCommit } = nextProps
-
     }
   }
 
@@ -48,7 +49,7 @@ export default class Repo extends Component {
     return (
       <div>
         <div className={styles.panelLeft}>
-          <SideBar />
+          <SideBar fileModifiedCount={this.props.fileModifiedCount}/>
         </div>
         <div className={styles.panelRight}>
           <HistoryList histories={this.props.histories}/>

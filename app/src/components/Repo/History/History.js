@@ -20,12 +20,11 @@ export default class History extends Component {
     const _date = new Date(date)
     const meridiem  = _date.getHours() < 12 ? ' 上午' : '下午'
     const hours = _date.getHours() < 12 ? _date.getHours() : _date.getHours() - 12
-    const dateStr = `${_date.getFullYear()}年${_date.getMonth()}月${_date.getDay()}日 ${meridiem}${hours}:${_date.getMinutes()}`
+    const dateStr = `${_date.getFullYear()}年${_date.getMonth()}月${_date.getDate()}日 ${meridiem}${hours}:${_date.getMinutes()}`
     return dateStr
   }
 
   render() {
-    console.log(styles)
     const date = this.getZhTime(this.props.date)
     return (
       <div className={styles.historyItem}>

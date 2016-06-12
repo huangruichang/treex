@@ -1,7 +1,7 @@
 
 import { remote } from 'electron'
 import low from 'lowdb'
-import { Repository } from 'nodegit'
+import { Repository, Diff } from 'nodegit'
 import fileAsync from 'lowdb/lib/file-async'
 import { join } from 'path'
 
@@ -119,6 +119,31 @@ export const initHistories = (repo) => {
     }).catch((e) => {
       dispatch({
         type: LOAD_HISTORIES_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
+export const INIT_SIDEBAR = 'INIT_SIDEBAR'
+export const INIT_SIDEBAR_FAILED = 'INIT_SIDEBAR_FAILED'
+
+export const initSideBar = (repo) => {
+  return dispatch => {
+    repo.getHeadCommit().then((commit) => {
+      return commit.getTree()
+    }).then((tree) => {
+      return Diff.treeToWorkdirWithIndex(repo, tree, null)
+    }).then((diff) => {
+      return diff.patches()
+    }).then((arrayConvenientPatch) => {
+      dispatch({
+        type: INIT_SIDEBAR,
+        fileModifiedCount: arrayConvenientPatch.length,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: INIT_SIDEBAR_FAILED,
         msg: e,
       })
     })
