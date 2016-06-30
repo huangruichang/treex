@@ -10,6 +10,7 @@ export default class History extends Component {
     desc: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired,
     date: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
   }
 
   constructor(props) {
@@ -27,7 +28,9 @@ export default class History extends Component {
   render() {
     const date = this.getZhTime(this.props.date)
     return (
-      <div className={styles.historyItem}>
+      <div className={styles.historyItem} onClick={() => {
+        this.props.onClick(this.props.commitId)
+      }}>
         <div className={styles.grid}>{this.props.desc}</div>
         <div className={`${styles.grid} ${styles.commitId} ${styles.ellipsis}`}>{this.props.commitId}</div>
         <div className={styles.grid}>{this.props.author}</div>

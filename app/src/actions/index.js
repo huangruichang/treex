@@ -199,11 +199,111 @@ const historiesHandler = (commit ,dispatch, init) => {
     }
   })
   eventEmitter.on('error', (error) => {
-    console.log(error)
     dispatch({
       type: LOAD_HISTORIES_FAIL,
       msg: error,
     })
   })
   eventEmitter.start()
+}
+
+export const LOAD_COMMIT_DIFF_FILES = 'LOAD_COMMIT_DIFF_FILES'
+export const LOAD_COMMIT_DIFF_FILES_FAIL = 'LOAD_COMMIT_DIFF_FILES_FAIL'
+
+export const loadCommitDiffFiles = (repo, commitId) => {
+  return (dispatch) => {
+    repo.getCommit(commitId).then((commit) => {
+      return commit.getDiff()
+    }).then((arrayDiff) => {
+      let promises = []
+      for (let diff of arrayDiff) {
+        promises.push(diff.patches())
+      }
+      return Promise.all(promises)
+    }).then((args) => {
+      let files = []
+      for (let arrayConvenientPatch of args) {
+        for (let convenientPatch of arrayConvenientPatch) {
+          // let oldFile = convenientPatch.oldFile()
+          // files.push(oldFile.path())
+          files.push(convenientPatch)
+        }
+      }
+      dispatch({
+        type: LOAD_COMMIT_DIFF_FILES,
+        commitDiffFiles: files,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_COMMIT_DIFF_FILES_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
+
+export const LOAD_COMMIT_INFO = 'LOAD_COMMIT_INFO'
+export const LOAD_COMMIT_INFO_FAIL = 'LOAD_COMMIT_INFO_FAIL'
+export const loadCommitInfo = (repo, commitId) => {
+  return (dispatch) => {
+    let _commit
+    repo.getCommit(commitId).then((commit) => {
+      _commit = commit
+      return commit.getParents()
+    }).then((arrayCommit) => {
+      let parents = []
+      for (let commit of arrayCommit) {
+        parents.push(commit.id().toString().slice(0, 5))
+      }
+      const commitInfo = {
+        desc: _commit.message(),
+        author: _commit.author().toString(),
+        commitId: _commit.id().toString(),
+        date: _commit.date().toString(),
+        parents: parents,
+      }
+      dispatch({
+        type: LOAD_COMMIT_INFO,
+        commitInfo: commitInfo,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_COMMIT_INFO_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
+export const LOAD_DIFF_LINES = 'LOAD_DIFF_LINES'
+export const LOAD_DIFF_LINES_FAIL = 'LOAD_DIFF_LINES_FAIL'
+export const loadDiffLines = (convenientPatch) => {
+  return (dispatch) => {
+    convenientPatch.hunks().then((arrayConvenientHunk) => {
+      let promises = []
+      for (let hunk of arrayConvenientHunk) {
+        promises.push(hunk.lines())
+      }
+      return Promise.all(promises)
+    }).then((args) => {
+      let arrayHunk = []
+      for (let lines of args) {
+        let arrayLine = []
+        for (let line of lines) {
+          arrayLine.push(line)
+        }
+        arrayHunk.push(arrayLine)
+      }
+      dispatch({
+        type: LOAD_DIFF_LINES,
+        diffPatches: arrayHunk,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_DIFF_LINES_FAIL,
+        msg: e,
+      })
+    })
+  }
 }

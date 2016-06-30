@@ -1,0 +1,16 @@
+
+.patch {
+  min-width: 100%;
+  .content {
+    word-break: keep-all;
+    word-wrap: normal;
+    white-space: nowrap;
+  }
+  .deletion {
+    background: #ffecec;
+  }
+
+  .addition {
+    background: #eaffea;
+  }
+}

@@ -10,7 +10,6 @@ export default class SideBar extends Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <div className={styles.sidebar}>
         <div className={styles.item}>

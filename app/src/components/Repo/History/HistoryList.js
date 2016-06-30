@@ -1,6 +1,5 @@
 
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
 import History from './History'
 
 const styles = require('./history.scss')
@@ -9,6 +8,7 @@ export default class HistoryList extends Component {
 
   static propTypes = {
     histories: PropTypes.array.isRequired,
+    onItemClick: PropTypes.func,
   }
 
   constructor(props) {
@@ -31,7 +31,8 @@ export default class HistoryList extends Component {
                     author={obj.author}
                     date={obj.date}
                     key={`repo-history-${index}`}
-                  />
+                    onClick={this.props.onItemClick}
+                />
         })}
       </div>
     )
