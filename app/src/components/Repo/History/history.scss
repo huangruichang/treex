@@ -11,7 +11,13 @@
   overflow: auto;
   border: 1px solid #ddd;
   font-size: 0;
+  position: relative;
+  padding-top: 10px;
   .th {
+    position: fixed;
+    top: 9px;
+    width: 682px;
+    background: #dcdcdc;
     .grid {
       display: inline-block;
       width: 20%;

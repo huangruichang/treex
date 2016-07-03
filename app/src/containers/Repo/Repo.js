@@ -108,7 +108,8 @@ export default class Repo extends Component {
               {commitInfo}
             </div>
             <div style={{
-              width: '50%',
+              width: '49%',
+              paddingLeft: '1%',
               height: 300,
               overflow: 'auto',
               marginTop: 20,

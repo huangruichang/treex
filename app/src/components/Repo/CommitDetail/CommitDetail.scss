@@ -12,3 +12,15 @@
   border: 1px solid #ddd;
   font-size: 12px;
 }
+
+.commitFileItem {
+  .icon {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+  }
+  height: 20px;
+  line-height: 20px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}

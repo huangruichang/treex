@@ -15,9 +15,17 @@ export default class DiffPanel extends Component {
   render() {
     return (
       <div>
-        {this.props.patches.map((patch, index) => {
-          return <DiffPatch lines={patch} key={`diff-patch-${index}`}/>
-        })}
+        <table style={{ minWidth: '100%' }}>
+        <tbody>
+        <tr>
+          <td>
+            {this.props.patches.map((patch, index) => {
+              return <DiffPatch lines={patch} key={`diff-patch-${index}`}/>
+            })}
+          </td>
+        </tr>
+        </tbody>
+        </table>
       </div>
     )
   }

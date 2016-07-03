@@ -224,8 +224,6 @@ export const loadCommitDiffFiles = (repo, commitId) => {
       let files = []
       for (let arrayConvenientPatch of args) {
         for (let convenientPatch of arrayConvenientPatch) {
-          // let oldFile = convenientPatch.oldFile()
-          // files.push(oldFile.path())
           files.push(convenientPatch)
         }
       }

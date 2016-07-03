@@ -1,6 +1,8 @@
 
 import React, { Component, PropTypes } from 'react'
 
+const styles = require('./commitDetail.scss')
+
 export default class CommitFileItem extends Component {
 
   static propTypes = {
@@ -14,11 +16,27 @@ export default class CommitFileItem extends Component {
     super(props)
   }
 
+  getIcon(convenientPath) {
+    if (convenientPath.isAdded()) {
+      return '+'
+    }
+    if (convenientPath.isDeleted()) {
+      return '-'
+    }
+    return '...'
+  }
+
   render() {
+
+    this.getIcon(this.props.patches)
+
     return (
-      <div onClick={() => { this.props.onClick(this.props.patches) }}
+      <div className={ styles.commitFileItem } onClick={() => { this.props.onClick(this.props.patches) }}
            style={this.props.style}>
-        <div>{this.props.path}</div>
+        <div>
+          <div className={ styles.icon }>{this.getIcon(this.props.patches)}</div>
+          {this.props.path}
+        </div>
       </div>
     )
   }

@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react'
 import CommitFileItem from './CommitFileItem'
 
-const styles = require('./CommitDetail.scss')
+const styles = require('./commitDetail.scss')
 
 export default class CommitFileList extends Component {
 
@@ -24,7 +24,8 @@ export default class CommitFileList extends Component {
                     onClick={this.props.onItemClick}
                     path={obj.oldFile().path()} key={`commit-diff-file-${index}`}
                     patches={obj}
-                  />
+                    style={{ marginTop: -1 }}
+                />
         })}
       </div>
     )

@@ -1,7 +1,7 @@
 
 import React, { Component, PropTypes } from 'react'
 
-const styles = require('./CommitDetail.scss')
+const styles = require('./commitDetail.scss')
 
 export default class CommitInfo extends Component {
 

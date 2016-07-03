@@ -1,16 +1,46 @@
 
+.pathWrapper {
+  margin: 0;
+}
 .patch {
   min-width: 100%;
   .content {
     word-break: keep-all;
     word-wrap: normal;
-    white-space: nowrap;
+    white-space: pre;
+    padding: 0;
+    margin: 0;
   }
   .deletion {
     background: #ffecec;
+    .symbol {
+      color: #b67979;
+    }
   }
 
   .addition {
     background: #eaffea;
+    .symbol {
+      color: #76ad59;
+    }
+  }
+  .lineWrapper {
+    padding: 0;
+    margin: 0;
+    background: #dcdcdc;
+    color: #968f8f;
+    width: 30px;
+    .lineNo {
+      text-align: center;
+      width: 30px;
+    }
+  }
+  .symbol {
+    width: 12px;
+    text-align: center;
+  }
+  .lineRange {
+    background: #dcdcdc;
+    color: #968f8f;
   }
 }

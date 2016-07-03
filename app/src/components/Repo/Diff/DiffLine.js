@@ -20,22 +20,35 @@ export default class DiffLine extends Component {
       [Diff.LINE.DELETION]: styles.deletion,
       [Diff.LINE.CONTEXT]: 'context',
     }
+    const symbolMap = {
+      [Diff.LINE.ADDITION]: '+',
+      [Diff.LINE.DELETION]: '-',
+    }
     return (
       <tr className={ stateMap[this.props.line.origin()] }>
-        <td>
-          {
-            this.props.line.oldLineno() !== -1 ?
-              this.props.line.oldLineno() : ' '
-          }
+        <td className={styles.lineWrapper}>
+          <div className={ styles.lineNo }>
+            {
+              this.props.line.oldLineno() !== -1 ?
+                this.props.line.oldLineno() : ' '
+            }
+          </div>
         </td>
-        <td>
-          {
-            this.props.line.newLineno() !== -1 ?
-              this.props.line.newLineno() : ' '
-          }
+        <td className={styles.lineWrapper}>
+          <div className={ styles.lineNo }>
+            {
+              this.props.line.newLineno() !== -1 ?
+                this.props.line.newLineno() : ' '
+            }
+          </div>
+        </td>
+        <td className={ styles.symbol }>
+          <span>{symbolMap[this.props.line.origin()] || ''}</span>
         </td>
         <td className={styles.content}>
-          <div>{this.props.line.content()}</div>
+          <div>
+            <span>{this.props.line.content()}</span>
+          </div>
         </td>
       </tr>
     )
