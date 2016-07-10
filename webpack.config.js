@@ -2,8 +2,8 @@
 const resolve = require('path').resolve
 const webpack = require('webpack')
 const NotifierPlugin = require('webpack-notifier')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const CopyWebpackPlugin = require('copy-webpack-plugin')
+// const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const appDir = resolve(__dirname, './app/src')
 
 module.exports = {
@@ -40,7 +40,8 @@ module.exports = {
       { test: /\.json$/, include: appDir, loader: 'json' },
       { test: /\.js$/, include: appDir, loader: 'babel' },
       { test: /\.scss$/, include: appDir, loaders: ["style", "css?modules", "sass?sourceMap"] },
-      { test: /.node$/, include: appDir, loader: 'node' }
+      { test: /.node$/, include: appDir, loader: 'node' },
+      { test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, loader: 'url-loader?limit=100000&name=[path][name].[ext]'}
     ]
   },
   resolve: {
@@ -69,9 +70,10 @@ module.exports = {
     // new HtmlWebpackPlugin({
     //   template: resolve(appDir, 'index.html'),
     // }),
-    // new CopyWebpackPlugin([{
-    //   from: resolve(appDir, 'index.html'),
-    // }]),
+    new CopyWebpackPlugin([{
+      from: resolve(appDir, 'index.html'),
+      to: 'index.html'
+    }]),
     new webpack.ProvidePlugin({
       Promise: 'bluebird',
     }),

@@ -1,0 +1,23 @@
+
+.projectList {
+  .projectItem {
+    padding: 0 10px;
+    cursor: pointer;
+    height: 50px;
+    line-height: 50px;
+    display: flex;
+    border-top: 1px solid #ddd;
+    .left {
+      > * {
+        display: inline-block;
+      }
+    }
+  }
+  .projectItem:active {
+    background: #ddd;
+  }
+  .projectItem:last-child {
+    border-bottom: 1px solid #ddd;
+  }
+}
+

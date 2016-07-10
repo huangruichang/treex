@@ -5,7 +5,7 @@ import { findProject, openRepo } from '../../actions'
 import ProjectList from '../../components/ProjectList/ProjectList'
 
 
-//const styles = require('./App.scss')
+const styles = require('./App.scss')
 
 const mapStateToProps = (state) => {
   return {
@@ -34,8 +34,10 @@ export default class App extends Component {
 
   render() {
     return (
-      <div>
-        <div onClick={::this.findProject}>+新仓库</div>
+      <div className={styles.app}>
+        <div className={styles.top}>
+          <div className={styles.addProjectButton} onClick={::this.findProject}>+新仓库</div>
+        </div>
         <ProjectList onItemClick={this.onItemClick} projects={this.props.projects}/>
       </div>
     )
