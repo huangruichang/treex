@@ -1,11 +1,19 @@
-
-
+body {
+  margin: 0;
+  padding: 0;
+}
+.ellipsis {
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 @font-face {font-family: 'iconfont';
-  src: url('../../assets/icons/iconfont.eot'); /* IE9*/
-  src: url('../../assets/icons/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('../../assets/icons/iconfont.woff') format('woff'), /* chrome、firefox */
-  url('../../assets/icons/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
-  url('../../assets/icons/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('../assets/icons/iconfont.eot'); /* IE9*/
+  src: url('../assets/icons/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('../assets/icons/iconfont.woff') format('woff'), /* chrome、firefox */
+  url('../assets/icons/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('../assets/icons/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .txIcon {

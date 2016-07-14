@@ -12,9 +12,24 @@
         display: inline-block;
       }
     }
+    .bucket {
+      border: 1px solid #999;
+      height: 30px;
+      width: 30px;
+      border-radius: 16px;
+      text-align: center;
+      line-height: 31px;
+      margin-right: 10px;
+      color: #999;
+    }
   }
   .projectItem:active {
-    background: #ddd;
+    background: red;
+  }
+  .projectItem:focus {
+    background: #125fc8;
+    color: #fff;
+    outline: none;
   }
   .projectItem:last-child {
     border-bottom: 1px solid #ddd;

@@ -11,6 +11,7 @@ import {
   loadDiffLines,
 } from '../../actions'
 
+require('!style!css!sass!../common.scss')
 const styles = require('./Repo.scss')
 let GLOBAL_REPO
 

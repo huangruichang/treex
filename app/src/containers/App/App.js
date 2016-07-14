@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { findProject, openRepo } from '../../actions'
 import ProjectList from '../../components/ProjectList/ProjectList'
 
-
+require('!style!css!sass!../common.scss')
 const styles = require('./App.scss')
 
 const mapStateToProps = (state) => {

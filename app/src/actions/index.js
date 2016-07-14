@@ -100,8 +100,8 @@ export const loadRepo = (projectName) => {
 
 export const openRepo = (projectName) => {
   let win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1048,
+    height: 543,
   })
   win.on('closed', () => {
     win = null

@@ -31,7 +31,7 @@ export default class CommitFileItem extends Component {
     this.getIcon(this.props.patches)
 
     return (
-      <div className={ styles.commitFileItem } onClick={() => { this.props.onClick(this.props.patches) }}
+      <div tabIndex={-1} className={ styles.commitFileItem } onClick={() => { this.props.onClick(this.props.patches) }}
            style={this.props.style}>
         <div>
           <div className={ styles.icon }>{this.getIcon(this.props.patches)}</div>
