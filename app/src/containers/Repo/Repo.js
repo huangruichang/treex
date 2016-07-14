@@ -5,6 +5,7 @@ import { HistoryList, SideBar, CommitFileList, CommitInfo, DiffPanel } from '../
 import {
   loadRepo,
   initHistories,
+  appendHistories,
   initSideBar,
   loadCommitDiffFiles,
   loadCommitInfo,
@@ -14,12 +15,12 @@ import {
 require('!style!css!sass!../common.scss')
 const styles = require('./Repo.scss')
 let GLOBAL_REPO
+let HISTORIES_COUNT = 100
 
 const mapStateToProps = (state) => {
   return {
     repo: state.repo.repo,
     histories: state.repo.histories,
-    headCommit: state.repo.historiesHeadCommit,
     currentCommit: state.repo.historiesCurrentCommit,
     fileModifiedCount: state.repo.fileModifiedCount,
     commitDiffFiles: state.repo.commitDiffFiles,
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch) => {
     onHistoryClick: (commitId) => {
       dispatch(loadCommitDiffFiles(GLOBAL_REPO, commitId))
       dispatch(loadCommitInfo(GLOBAL_REPO, commitId))
+    },
+    onHistoryScrollBottom: () => {
+      dispatch(appendHistories(GLOBAL_REPO, HISTORIES_COUNT += 100))
     },
     onCommitDiffFileClick: (patch) => {
       dispatch(loadDiffLines(patch))
@@ -49,6 +53,7 @@ export default class Repo extends Component {
   static propTypes = {
     store: PropTypes.object,
     onHistoryClick: PropTypes.func,
+    onHistoryScrollBottom: PropTypes.func,
   }
 
   constructor(props) {
@@ -61,9 +66,6 @@ export default class Repo extends Component {
       store.dispatch(initHistories(repo))
       store.dispatch(initSideBar(repo))
       GLOBAL_REPO = repo
-    }
-    if (this.props.histories.length != nextProps.histories.length) {
-      // const { headCommit, currentCommit } = nextProps
     }
   }
 
@@ -100,6 +102,7 @@ export default class Repo extends Component {
           <HistoryList
             histories={this.props.histories}
             onItemClick={this.props.onHistoryClick}
+            onScrollBottom={this.props.onHistoryScrollBottom}
           />
           <div style={{
             display: 'flex',

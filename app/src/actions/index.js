@@ -112,10 +112,26 @@ export const openRepo = (projectName) => {
 
 const HISTORIES_LIMIT = 100
 
-export const initHistories = (repo) => {
+export const initHistories = (repo, historiesLimit) => {
   return dispatch => {
     repo.getHeadCommit().then((commit) => {
-      historiesHandler(commit, dispatch, true)
+      historiesHandler(commit, dispatch, historiesLimit)
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_HISTORIES_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
+const APPEND_HISTORIES = 'APPEND_HISTORIES'
+
+export const appendHistories = (repo, historiesLimit) => {
+  console.log('appendHistories')
+  return dispatch => {
+    repo.getHeadCommit().then((commit) => {
+      historiesHandler(commit, dispatch, historiesLimit, APPEND_HISTORIES)
     }).catch((e) => {
       dispatch({
         type: LOAD_HISTORIES_FAIL,
@@ -150,20 +166,13 @@ export const initSideBar = (repo) => {
   }
 }
 
-export const loadHistories = (commit) => {
-  return dispatch => {
-    historiesHandler(commit, dispatch)
-  }
-}
-
-const historiesHandler = (commit ,dispatch, init) => {
-  const headCommit = commit
+const historiesHandler = (commit ,dispatch, hisotriesLimit = HISTORIES_LIMIT, REDUCER_TYPE = LOAD_HISTORIES) => {
   const eventEmitter = commit.history()
   const histories = []
   let flag = false
   let currentCommit
   eventEmitter.on('commit', (commit) => {
-    if (histories.length < HISTORIES_LIMIT || flag) {
+    if (histories.length < hisotriesLimit || flag) {
       const history = {
         desc: commit.message(),
         author: commit.author().toString(),
@@ -178,9 +187,6 @@ const historiesHandler = (commit ,dispatch, init) => {
         histories: histories,
         currentCommit: currentCommit,
       }
-      if (init) {
-        action.headCommit = headCommit
-      }
       dispatch(action)
       flag = true
     }
@@ -188,12 +194,9 @@ const historiesHandler = (commit ,dispatch, init) => {
   eventEmitter.on('end', () => {
     if (histories.length <= HISTORIES_LIMIT) {
       const action = {
-        type: LOAD_HISTORIES,
+        type: REDUCER_TYPE,
         histories: histories,
         currentCommit: currentCommit,
-      }
-      if (init) {
-        action.headCommit = headCommit
       }
       dispatch(action)
     }
