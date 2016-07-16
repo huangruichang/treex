@@ -3,7 +3,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, hashHistory } from 'react-router'
-import { App, Repo, DevTools } from './containers'
+import { App, Repo, DevTools, FileStatePage, HistoryPage } from './containers'
 import { listProject } from './actions'
 
 import configureStore from './store/configureStore'
@@ -16,8 +16,11 @@ const createElement = (Component, props) => {
 
 const component = (
   <Router history={hashHistory} createElement={createElement}>
-    <Route path="/" component={App} onEnter={() => { store.dispatch(listProject()) }}/>
-    <Route path="/:project" component={Repo} />
+    <Route path="/projects" component={App} onEnter={() => { store.dispatch(listProject()) }}/>
+    <Route path="/repo/:project" component={Repo}>
+      <Route path="history" components={{page: HistoryPage}}/>
+      <Route path="fileState" components={{page: FileStatePage}}/>
+    </Route>
   </Router>
 )
 

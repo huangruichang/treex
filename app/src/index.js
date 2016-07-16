@@ -7,5 +7,5 @@ app.on('ready', () => {
     width: 480,
     height: 622,
   })
-  win.loadURL(`file:\/\/${join(__dirname, 'index.html')}`)
+  win.loadURL(`file:\/\/${join(__dirname, 'index.html#\/projects')}`)
 })

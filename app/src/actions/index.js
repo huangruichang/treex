@@ -106,7 +106,7 @@ export const openRepo = (projectName) => {
   win.on('closed', () => {
     win = null
   })
-  win.loadURL(`file:\/\/${join(__dirname, `index.html#\/${projectName}`)}`)
+  win.loadURL(`file:\/\/${join(__dirname, `index.html#\/repo\/${projectName}/history`)}`)
   win.show()
 }
 

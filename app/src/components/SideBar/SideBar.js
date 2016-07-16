@@ -1,11 +1,13 @@
 
 import React, { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
 
 const styles = require('./sidebar.scss')
 
 export default class SideBar extends Component {
 
   static propTypes = {
+    params: PropTypes.object,
     fileModifiedCount: PropTypes.number.isRequired,
   }
 
@@ -17,8 +19,14 @@ export default class SideBar extends Component {
             <div className={styles.icon}></div>
             <span className={styles.text}>WORKSPACE</span>
           </div>
-          <div className={styles.subTitle}>文件状态{this.props.fileModifiedCount}</div>
-          <div className={styles.subTitle}>历史</div>
+          <Link className={styles.subTitle} to={`/repo/${this.props.params.project}/fileState`}
+                activeClassName={styles.active}>
+            文件状态{this.props.fileModifiedCount}
+          </Link>
+          <Link className={styles.subTitle} to={`/repo/${this.props.params.project}/history`}
+                activeClassName={styles.active}>
+            历史
+          </Link>
           <div className={styles.subTitle}>搜索</div>
         </div>
         <div className={styles.item}>
