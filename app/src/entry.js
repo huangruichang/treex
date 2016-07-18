@@ -18,8 +18,8 @@ const component = (
   <Router history={hashHistory} createElement={createElement}>
     <Route path="/projects" component={App} onEnter={() => { store.dispatch(listProject()) }}/>
     <Route path="/repo/:project" component={Repo}>
-      <Route path="history" components={{page: HistoryPage}}/>
-      <Route path="fileState" components={{page: FileStatePage}}/>
+      <Route path="history" components={{ page: HistoryPage }}/>
+      <Route path="fileState" components={{ page: FileStatePage }}/>
     </Route>
   </Router>
 )

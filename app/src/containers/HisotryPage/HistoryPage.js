@@ -1,10 +1,10 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { RESET_DIFF_LINES } from '../../actions'
 import {
   initHistories,
   appendHistories,
-  initSideBar,
   loadCommitDiffFiles,
   loadCommitInfo,
   loadDiffLines,
@@ -57,13 +57,15 @@ export default class HistoryPage extends Component {
 
   constructor(props) {
     super(props)
+    this.historiesInit = false
+    this.commitDiffFilesInit = false
   }
 
   componentWillMount() {
     const { repo, store } = this.props
     if (repo && store) {
       store.dispatch(initHistories(repo))
-      store.dispatch(initSideBar(repo))
+      GLOBAL_REPO = repo
     }
   }
 
@@ -71,9 +73,29 @@ export default class HistoryPage extends Component {
     if (!this.props.repo && !!nextProps.repo) {
       const { repo, store } = nextProps
       store.dispatch(initHistories(repo))
-      store.dispatch(initSideBar(repo))
       GLOBAL_REPO = repo
     }
+    if (nextProps.histories.length > 0 && !this.historiesInit) {
+      this.historiesInit = true
+      const { store } = this.props
+      const firstHistory = nextProps.histories[0]
+      store.dispatch(loadCommitDiffFiles(GLOBAL_REPO, firstHistory.commitId))
+      store.dispatch(loadCommitInfo(GLOBAL_REPO, firstHistory.commitId))
+    }
+    if (nextProps.commitDiffFiles.length > 0 && !this.commitDiffFilesInit) {
+      this.commitDiffFilesInit = true
+      const { store } = this.props
+      const firstCommitDiffFile = nextProps.commitDiffFiles[0]
+      store.dispatch(loadDiffLines(firstCommitDiffFile))
+    }
+  }
+
+  componentWillUnmount() {
+    const { store } = this.props
+    store.dispatch({
+      type: RESET_DIFF_LINES,
+      diffPatches: [],
+    })
   }
 
   render() {
@@ -87,7 +109,7 @@ export default class HistoryPage extends Component {
         marginTop: 10,
       }}
     />:''
-    let commitFileList =this.props.commitDiffFiles.length > 0 ?
+    let commitFileList = this.props.commitDiffFiles.length > 0 ?
       <CommitFileList
         commitDiffFiles={this.props.commitDiffFiles}
         onItemClick={this.props.onCommitDiffFileClick}
@@ -103,21 +125,21 @@ export default class HistoryPage extends Component {
           onScrollBottom={this.props.onHistoryScrollBottom}
         />
         <div style={{
-            display: 'flex',
-          }}>
+          display: 'flex',
+        }}>
           <div style={{ width: '50%' }}>
             {commitFileList}
             {commitInfo}
           </div>
           <div style={{
-              width: '49%',
-              paddingLeft: '1%',
-              height: 300,
-              overflow: 'auto',
-              marginTop: 20,
-              fontSize: 12,
-            }}>
-            <DiffPanel patches={this.props.diffPatches}/>
+            width: '49%',
+            paddingLeft: '1%',
+            height: 300,
+            overflow: 'auto',
+            marginTop: 20,
+            fontSize: 12,
+          }}>
+          <DiffPanel patches={this.props.diffPatches}/>
           </div>
         </div>
       </div>

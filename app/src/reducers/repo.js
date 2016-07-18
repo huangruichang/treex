@@ -11,6 +11,11 @@ import {
   LOAD_COMMIT_INFO_FAIL,
   LOAD_DIFF_LINES,
   LOAD_DIFF_LINES_FAIL,
+  LOAD_UNSTAGED_FILES,
+  LOAD_UNSTAGED_FILES_FAIL,
+  LOAD_STAGED_FILES,
+  LOAD_STAGED_FILES_FAIL,
+  RESET_DIFF_LINES,
 } from '../actions'
 
 const initalState = {
@@ -21,6 +26,8 @@ const initalState = {
   commitDiffFiles: [],
   commitInfo: undefined,
   diffPatches: [],
+  unstagedPatches: [],
+  stagedPatches: [],
 }
 
 export default (state = initalState, action) => {
@@ -62,6 +69,21 @@ export default (state = initalState, action) => {
         ...state,
         histories: action.histories,
       }
+    case LOAD_UNSTAGED_FILES:
+      return {
+        ...state,
+        unstagedPatches: action.unstagedPatches,
+      }
+    case LOAD_STAGED_FILES:
+      return {
+        ...state,
+        stagedPatches: action.stagedPatches,
+      }
+    case RESET_DIFF_LINES:
+      return {
+        ...state,
+        diffPatches: action.diffPatches,
+      }
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -72,6 +94,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case LOAD_DIFF_LINES_FAIL:
+      alert(action.msg)
+      return state
+    case LOAD_UNSTAGED_FILES_FAIL:
+      alert(action.msg)
+      return state
+    case LOAD_STAGED_FILES_FAIL:
       alert(action.msg)
       return state
     default:

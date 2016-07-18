@@ -1,0 +1,25 @@
+
+.container {
+  width: 100%;
+  height: 520px;
+  font-size: 0;
+  .leftPart {
+    display: inline-block;
+    width: 50%;
+    height: 100%;
+    .upper {
+      height: 50%;
+    }
+    .lower {
+      height: 50%;
+    }
+    vertical-align: top;
+  }
+  .rightPart {
+    display: inline-block;
+    width: 50%;
+    height: 100%;
+    vertical-align: top;
+    overflow: scroll;
+  }
+}

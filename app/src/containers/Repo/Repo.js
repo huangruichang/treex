@@ -1,8 +1,8 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { HistoryList, SideBar, CommitFileList, CommitInfo, DiffPanel } from '../../components'
-import { loadRepo } from '../../actions'
+import { SideBar } from '../../components'
+import { loadRepo, initSideBar } from '../../actions'
 import HisotryPage from '../HisotryPage/HistoryPage'
 
 require('!style!css!sass!../common.scss')
@@ -32,6 +32,13 @@ export default class Repo extends Component {
   componentWillMount() {
     const { store, params } = this.props
     store.dispatch(loadRepo(params.project))
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.repo && !!nextProps.repo) {
+      const { repo, store } = nextProps
+      store.dispatch(initSideBar(repo))
+    }
   }
 
   render() {

@@ -279,6 +279,7 @@ export const loadCommitInfo = (repo, commitId) => {
 
 export const LOAD_DIFF_LINES = 'LOAD_DIFF_LINES'
 export const LOAD_DIFF_LINES_FAIL = 'LOAD_DIFF_LINES_FAIL'
+export const RESET_DIFF_LINES = 'RESET_DIFF_LINES'
 export const loadDiffLines = (convenientPatch) => {
   return (dispatch) => {
     convenientPatch.hunks().then((arrayConvenientHunk) => {
@@ -308,3 +309,54 @@ export const loadDiffLines = (convenientPatch) => {
     })
   }
 }
+
+export const LOAD_STAGED_FILES = 'LOAD_STAGED_FILES'
+export const LOAD_STAGED_FILES_FAIL = 'LOAD_STAGED_FILES_FAIL'
+export const loadStagedFiles = (repo) => {
+  let index
+  return ((dispatch) => {
+    repo.index().then((idx) => {
+      index = idx
+      return repo.getHeadCommit()
+    }).then((commit) => {
+      return commit.getTree()
+    }).then((tree) => {
+      return Diff.treeToIndex(repo, tree, index, null)
+    }).then((diff) => {
+      return diff.patches()
+    }).then((patches) => {
+      dispatch({
+        type: LOAD_STAGED_FILES,
+        stagedPatches: patches,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_STAGED_FILES_FAIL,
+        msg: e,
+      })
+    })
+  })
+}
+
+export const LOAD_UNSTAGED_FILES = 'LOAD_UNSTAGED_FILES'
+export const LOAD_UNSTAGED_FILES_FAIL = 'LOAD_UNSTAGED_FILES_FAIL'
+export const loadUnstagedFiles = (repo) => {
+  return (dispatch) => {
+    repo.index().then((index) => {
+      return Diff.indexToWorkdir(repo, index, null)
+    }).then((diff) => {
+      return diff.patches()
+    }).then((patches) => {
+      dispatch({
+        type: LOAD_UNSTAGED_FILES,
+        unstagedPatches: patches,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_UNSTAGED_FILES_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
