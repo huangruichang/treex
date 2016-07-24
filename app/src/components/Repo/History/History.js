@@ -27,7 +27,7 @@ export default class History extends Component {
   }
 
   render() {
-    const date = this.getZhTime(this.props.date)
+    const date = this.props.date === '*'? this.props.date : this.getZhTime(this.props.date)
     return (
       <div tabIndex={-1} className={styles.historyItem} onClick={() => {
         this.props.onClick(this.props.commitId)

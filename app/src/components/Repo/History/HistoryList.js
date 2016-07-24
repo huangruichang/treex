@@ -12,6 +12,8 @@ export default class HistoryList extends Component {
     histories: PropTypes.array.isRequired,
     onItemClick: PropTypes.func,
     onScrollBottom: PropTypes.func.isRequired,
+    hasUnCommittedHistory: PropTypes.bool,
+    onUnCommittedHistory: PropTypes.func,
   }
 
   constructor(props) {
@@ -60,6 +62,15 @@ export default class HistoryList extends Component {
           <div className={styles.grid}>作者</div>
           <div className={styles.grid}>日期</div>
         </div>
+        {!this.props.hasUnCommittedHistory ? '' :
+          <History
+            desc={'Uncommitted Changes'}
+            commitId={'*'}
+            author={'*'}
+            date={'*'}
+            onClick={this.props.onUnCommittedHistory}
+          />
+        }
         {this.props.histories.map((obj, index) => {
           return <History
                     desc={obj.desc}
