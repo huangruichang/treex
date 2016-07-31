@@ -6,6 +6,8 @@ import {
   loadUnstagedFiles,
   loadStagedFiles,
   loadDiffLines,
+  stageFileLines,
+  stageAllFileLines,
   RESET_DIFF_LINES,
 } from '../../actions'
 
@@ -21,10 +23,24 @@ const mapStateToProps = (state) => {
   }
 }
 
+let GLOBAL_REPO
+
 const mapDispatchToProps = (dispatch) => {
   return {
     onCommitDiffFileClick: (patch) => {
       dispatch(loadDiffLines(patch))
+    },
+    onStageClick: (patch) => {
+      dispatch(stageFileLines(GLOBAL_REPO, patch, false))
+    },
+    onUnStageClick: (patch) => {
+      dispatch(stageFileLines(GLOBAL_REPO, patch, true))
+    },
+    onStageAllClick: (patches) => {
+      dispatch(stageAllFileLines(GLOBAL_REPO, patches, false))
+    },
+    onUnStageAllClick: (patches) => {
+      dispatch(stageAllFileLines(GLOBAL_REPO, patches, true))
     },
   }
 }
@@ -45,6 +61,7 @@ export default class FileStatePage extends Component {
 
   constructor(props) {
     super(props)
+    this.diffPanelInit = false
   }
 
   componentWillMount() {
@@ -52,6 +69,7 @@ export default class FileStatePage extends Component {
     if (store && repo) {
       store.dispatch(loadUnstagedFiles(repo))
       store.dispatch(loadStagedFiles(repo))
+      GLOBAL_REPO = repo
     }
   }
 
@@ -60,6 +78,16 @@ export default class FileStatePage extends Component {
       const { repo, store } = nextProps
       store.dispatch(loadUnstagedFiles(repo))
       store.dispatch(loadStagedFiles(repo))
+      GLOBAL_REPO = repo
+    }
+    if (!this.diffPanelInit && (nextProps.unstagedPatches.length > 0 || nextProps.stagedPatches.length > 0)) {
+      this.diffPanelInit = true
+      const { store } = this.props
+      if (nextProps.unstagedPatches.length > 0) {
+        store.dispatch(loadDiffLines(nextProps.unstagedPatches[0]))
+      } else if (nextProps.stagedPatches.length > 0) {
+        store.dispatch(loadDiffLines(nextProps.stagedPatches[0]))
+      }
     }
   }
 
@@ -79,6 +107,9 @@ export default class FileStatePage extends Component {
         style={{
           height: 250,
         }}
+        mode={'unstaged'}
+        onStageClick={this.props.onStageClick}
+        onStageAllClick={this.props.onStageAllClick}
       /> : ''
     let stagedFileList = this.props.stagedPatches.length > 0 ?
       <CommitFileList
@@ -87,6 +118,9 @@ export default class FileStatePage extends Component {
         style={{
           height: 250,
         }}
+        mode={'staged'}
+        onUnStageClick={this.props.onUnStageClick}
+        onUnStageAllClick={this.props.onUnStageAllClick}
       /> : ''
     return (
       <div className={styles.container}>

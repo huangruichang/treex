@@ -16,6 +16,10 @@ import {
   LOAD_STAGED_FILES,
   LOAD_STAGED_FILES_FAIL,
   RESET_DIFF_LINES,
+  STAGE_FILE_LINES,
+  STAGE_FILE_LINES_FAIL,
+  STAGE_ALL_FILE_LINES,
+  STAGE_ALL_FILE_LINES_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -84,6 +88,18 @@ export default (state = initalState, action) => {
         ...state,
         diffPatches: action.diffPatches,
       }
+    case STAGE_FILE_LINES:
+      return {
+        ...state,
+        unstagedPatches: action.unstagedPatches,
+        stagedPatches: action.stagedPatches,
+      }
+    case STAGE_ALL_FILE_LINES:
+      return {
+        ...state,
+        unstagedPatches: action.unstagedPatches,
+        stagedPatches: action.stagedPatches,
+      }
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -100,6 +116,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case LOAD_STAGED_FILES_FAIL:
+      alert(action.msg)
+      return state
+    case STAGE_FILE_LINES_FAIL:
+      alert(action.msg)
+      return state
+    case STAGE_ALL_FILE_LINES_FAIL:
       alert(action.msg)
       return state
     default:

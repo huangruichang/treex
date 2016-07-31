@@ -10,6 +10,8 @@ import {
   loadDiffLines,
   loadUnstagedFiles,
   loadStagedFiles,
+  stageFileLines,
+  stageAllFileLines,
 } from '../../actions'
 import { HistoryList, CommitFileList, CommitInfo, DiffPanel } from '../../components'
 
@@ -45,6 +47,18 @@ const mapDispatchToProps = (dispatch) => {
     onUnCommittedHistory: () => {
       dispatch(loadUnstagedFiles(GLOBAL_REPO))
       dispatch(loadStagedFiles(GLOBAL_REPO))
+    },
+    onStageClick: (patch) => {
+      dispatch(stageFileLines(GLOBAL_REPO, patch, false))
+    },
+    onUnStageClick: (patch) => {
+      dispatch(stageFileLines(GLOBAL_REPO, patch, true))
+    },
+    onStageAllClick: (patches) => {
+      dispatch(stageAllFileLines(GLOBAL_REPO, patches, false))
+    },
+    onUnStageAllClick: (patches) => {
+      dispatch(stageAllFileLines(GLOBAL_REPO, patches, true))
     },
   }
 }
@@ -172,17 +186,17 @@ export default class HistoryPage extends Component {
       <CommitFileList
         commitDiffFiles={this.props.unstagedPatches}
         onItemClick={this.props.onCommitDiffFileClick}
-        style={{
-          height: 100,
-        }}
+        mode={'unstaged'}
+        onStageClick={this.props.onStageClick}
+        onStageAllClick={this.props.onStageAllClick}
       /> : <div style={{ minHeight: 150 }}></div>
     let stagedFileList = this.props.stagedPatches.length > 0 ?
       <CommitFileList
         commitDiffFiles={this.props.stagedPatches}
         onItemClick={this.props.onCommitDiffFileClick}
-        style={{
-          height: 100,
-        }}
+        mode={'staged'}
+        onUnStageClick={this.props.onUnStageClick}
+        onUnStageAllClick={this.props.onUnStageAllClick}
       /> : <div style={{ minHeight: 150 }}></div>
     let uppperBox
     let lowerBox
