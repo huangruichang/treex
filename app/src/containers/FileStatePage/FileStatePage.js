@@ -1,13 +1,15 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { CommitFileList, DiffPanel } from '../../components'
+import { CommitFileList, DiffPanel, CommitForm } from '../../components'
 import {
   loadUnstagedFiles,
   loadStagedFiles,
   loadDiffLines,
   stageFileLines,
   stageAllFileLines,
+  loadUser,
+  createCommitOnHead,
   RESET_DIFF_LINES,
 } from '../../actions'
 
@@ -20,6 +22,7 @@ const mapStateToProps = (state) => {
     unstagedPatches: state.repo.unstagedPatches,
     stagedPatches: state.repo.stagedPatches,
     diffPatches: state.repo.diffPatches,
+    user: state.project.user,
   }
 }
 
@@ -42,6 +45,14 @@ const mapDispatchToProps = (dispatch) => {
     onUnStageAllClick: (patches) => {
       dispatch(stageAllFileLines(GLOBAL_REPO, patches, true))
     },
+    onSubmitClick: (commitMessage, user, callback) => {
+      dispatch(createCommitOnHead({
+        repo: GLOBAL_REPO,
+        commitMessage,
+        author: user,
+        callback: callback
+      }))
+    },
   }
 }
 
@@ -62,6 +73,8 @@ export default class FileStatePage extends Component {
   constructor(props) {
     super(props)
     this.diffPanelInit = false
+    this.showCommitForm = false
+    this.committing = false
   }
 
   componentWillMount() {
@@ -71,6 +84,7 @@ export default class FileStatePage extends Component {
       store.dispatch(loadStagedFiles(repo))
       GLOBAL_REPO = repo
     }
+    store.dispatch(loadUser())
   }
 
   componentWillReceiveProps(nextProps) {
@@ -99,6 +113,40 @@ export default class FileStatePage extends Component {
     })
   }
 
+  onCommitInputFocus() {
+    this.showCommitForm = true
+    this.forceUpdate()
+
+    //shit
+    setTimeout(() => {
+      document.getElementsByTagName('textarea')[0].focus()
+    }, 100)
+  }
+
+  onSubmitClick(commitMessage) {
+    if (!commitMessage || this.committing) {
+      return
+    }
+    this.committing = true
+    let thiz = this
+    this.props.onSubmitClick(commitMessage, this.props.user, () => {
+      console.log(thiz)
+      thiz.committing = false
+      alert('提交成功')
+      thiz.showCommitForm = false
+      thiz.forceUpdate()
+      //shit
+      setTimeout(() => {
+        document.getElementsByTagName('textarea')[0].value = ''
+      }, 100)
+    })
+  }
+
+  onCancelClick() {
+    this.showCommitForm = false
+    this.forceUpdate()
+  }
+
   render() {
     let unstagedFileList = this.props.unstagedPatches.length > 0 ?
       <CommitFileList
@@ -123,17 +171,32 @@ export default class FileStatePage extends Component {
         onUnStageAllClick={this.props.onUnStageAllClick}
       /> : ''
     return (
-      <div className={styles.container}>
-        <div className={styles.leftPart}>
-          <div className={styles.upper}>
-            {stagedFileList}
+      <div>
+        <div className={styles.container}>
+          <div className={styles.leftPart}>
+            <div className={styles.upper}>
+              {stagedFileList}
+            </div>
+            <div className={styles.lower}>
+              {unstagedFileList}
+            </div>
           </div>
-          <div className={styles.lower}>
-            {unstagedFileList}
+          <div className={styles.rightPart}>
+            <DiffPanel patches={ this.props.diffPatches }/>
           </div>
-        </div>
-        <div className={styles.rightPart}>
-          <DiffPanel patches={this.props.diffPatches}/>
+          <div className={styles.bottom}>
+            <div style={{ width: '96%', margin: 'auto', padding: '6px 0', display: this.showCommitForm? 'none' : 'block'  }}>
+              <input placeholder={'提交信息'}
+                     style={{ width: '99%', outline: 'none', height: 24, paddingLeft: '1%' }}
+                     onFocus={::this.onCommitInputFocus}/>
+            </div>
+            <div style={{ display: this.showCommitForm? 'block' : 'none', height: 100 }}>
+              <CommitForm ref="commifForm"
+                onSubmitClick={::this.onSubmitClick}
+                onCancelClick={::this.onCancelClick}
+              />
+            </div>
+          </div>
         </div>
       </div>
     )

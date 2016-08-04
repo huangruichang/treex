@@ -20,6 +20,8 @@ import {
   STAGE_FILE_LINES_FAIL,
   STAGE_ALL_FILE_LINES,
   STAGE_ALL_FILE_LINES_FAIL,
+  CREATE_COMMIT_ON_HEAD,
+  CREATE_COMMIT_ON_HEAD_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -100,6 +102,13 @@ export default (state = initalState, action) => {
         unstagedPatches: action.unstagedPatches,
         stagedPatches: action.stagedPatches,
       }
+    case CREATE_COMMIT_ON_HEAD:
+      return {
+        ...state,
+        unstagedPatches: action.unstagedPatches,
+        stagedPatches: action.stagedPatches,
+        fileModifiedCount: action.unstagedPatches.length + action.stagedPatches.length,
+      }
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -122,6 +131,9 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case STAGE_ALL_FILE_LINES_FAIL:
+      alert(action.msg)
+      return state
+    case CREATE_COMMIT_ON_HEAD_FAIL:
       alert(action.msg)
       return state
     default:

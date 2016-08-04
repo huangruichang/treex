@@ -1,9 +1,10 @@
 
 import { remote } from 'electron'
 import low from 'lowdb'
-import { Repository, Diff } from 'nodegit'
+import { Repository, Diff, Reference, Signature } from 'nodegit'
 import fileAsync from 'lowdb/lib/file-async'
 import { join } from 'path'
+import { exec } from 'child_process'
 
 export const REMOVE_PROJECT = 'REMOVE_PROJECT'
 export const LIST_PROJECT = 'LIST_PROJECT'
@@ -71,6 +72,36 @@ export const listProject = () => {
     dispatch({
       type: LIST_PROJECT,
       projects: newProjects,
+    })
+  }
+}
+
+export const LOAD_USER = 'LOAD_USER'
+export const LOAD_USER_FAIL = 'LOAD_USER_FAIL'
+export const loadUser = () => {
+  return (dispatch) => {
+    function dispatchErr(err) {
+      dispatch({
+        type: LOAD_USER_FAIL,
+        msg: err,
+      })
+    }
+    let user = {}
+    exec('git config user.name', (err, stdout, stderr) => {
+      if (err || stderr) {
+        return dispatchErr(err || stderr)
+      }
+      user.name = stdout
+      exec('git config user.email', (err, stdout, stderr) => {
+        if (err || stderr) {
+          return dispatchErr(err || stderr)
+        }
+        user.email = stdout
+        dispatch({
+          type: LOAD_USER,
+          user: user,
+        })
+      })
     })
   }
 }
@@ -467,3 +498,35 @@ export const stageAllFileLines = (repo, patches, isStaged) => {
     })
   }
 }
+
+export const CREATE_COMMIT_ON_HEAD = 'CREATE_COMMIT_ON_HEAD'
+export const CREATE_COMMIT_ON_HEAD_FAIL = 'CREATE_COMMIT_ON_HEAD_FAIL'
+export const createCommitOnHead = ({repo, commitMessage, author, committer = author, callback}) => {
+  return (dispatch) => {
+    let index, oid
+    repo.refreshIndex().then((idx) => {
+      index = idx
+      return index.write()
+    }).then(() => {
+      return index.writeTree()
+    }).then((oidResult) => {
+      oid = oidResult
+      return Reference.nameToId(repo, 'HEAD')
+    }).then((head) => {
+      return repo.getCommit(head)
+    }).then((parent) => {
+      const authorSignature = Signature.now(author.name, author.email)
+      const committerSignature = Signature.now(author.name, author.email)
+      return repo.createCommit('HEAD', authorSignature, committerSignature, commitMessage, oid, [parent])
+    }).then(() => {
+      callback && callback()
+      return loadStageAndUnStage(dispatch, CREATE_COMMIT_ON_HEAD, repo)
+    }).catch((e) => {
+      dispatch({
+        type: CREATE_COMMIT_ON_HEAD_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+

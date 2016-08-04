@@ -3,6 +3,7 @@
   width: 100%;
   height: 520px;
   font-size: 0;
+  position: relative;
   .leftPart {
     display: inline-block;
     width: 50%;
@@ -21,5 +22,11 @@
     height: 100%;
     vertical-align: top;
     overflow: scroll;
+  }
+  .bottom {
+    position: absolute;
+    bottom: -1px;
+    width: 100%;
+    background: #ddd;
   }
 }
