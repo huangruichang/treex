@@ -9,6 +9,34 @@ export default class SideBar extends Component {
   static propTypes = {
     params: PropTypes.object,
     fileModifiedCount: PropTypes.number.isRequired,
+    localBranches: PropTypes.array.isRequired,
+    remoteBranches: PropTypes.array.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+    this.isShowLocalBranches = false
+    this.isShowRemoteBranches = false
+  }
+
+  showLocalBranches() {
+    this.isShowLocalBranches = true
+    this.forceUpdate()
+  }
+
+  hideLocalBranches() {
+    this.isShowLocalBranches = false
+    this.forceUpdate()
+  }
+
+  showRemoteBranches() {
+    this.isShowRemoteBranches = true
+    this.forceUpdate()
+  }
+
+  hideRemoteBranches() {
+    this.isShowRemoteBranches = false
+    this.forceUpdate()
   }
 
   render() {
@@ -16,7 +44,9 @@ export default class SideBar extends Component {
       <div className={styles.sidebar}>
         <div className={styles.item}>
           <div className={styles.title}>
-            <div className={styles.icon}></div>
+            <div className={styles.icon}>
+
+            </div>
             <span className={styles.text}>WORKSPACE</span>
           </div>
           <Link className={styles.subTitle} to={`/repo/${this.props.params.project}/fileState`}
@@ -29,12 +59,27 @@ export default class SideBar extends Component {
           </Link>
           <div className={styles.subTitle}>搜索</div>
         </div>
-        <div className={styles.item}>
+        <div className={`${styles.item} ${!this.isShowLocalBranches? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
-            <div className={styles.icon}></div>
+            <div className={styles.icon}>
+              <i className={'txtIcon codeFork big'}></i>
+            </div>
             <span className={styles.text}>分支</span>
+            <span></span>
+            <span
+              className={this.isShowLocalBranches? styles.hoverShow : styles.hidden}
+              onClick={::this.hideLocalBranches}
+            >隐藏</span>
+            <span
+              className={!this.isShowLocalBranches? styles.hoverShow : styles.hidden}
+              onClick={::this.showLocalBranches}
+            >显示</span>
           </div>
-          <div className={styles.subTitle}>master</div>
+          {
+            this.props.localBranches.map((obj, index) => {
+              return <div key={`local-branch-name-${index}`} className={styles.subTitle}>{obj.name}</div>
+            })
+          }
         </div>
         <div className={styles.item}>
           <div className={styles.title}>
@@ -42,11 +87,26 @@ export default class SideBar extends Component {
             <span className={styles.text}>标签</span>
           </div>
         </div>
-        <div className={styles.item}>
+        <div className={`${styles.item} ${!this.isShowRemoteBranches? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
-            <div className={styles.icon}></div>
+            <div className={styles.icon}>
+              <i className={'txtIcon cloud big'}></i>
+            </div>
             <span className={styles.text}>远端</span>
+            <span
+              className={this.isShowRemoteBranches? styles.hoverShow : styles.hidden}
+              onClick={::this.hideRemoteBranches}
+            >隐藏</span>
+            <span
+              className={!this.isShowRemoteBranches? styles.hoverShow : styles.hidden}
+              onClick={::this.showRemoteBranches}
+            >显示</span>
           </div>
+          {
+            this.props.remoteBranches.map((obj, index) => {
+              return <div key={`remote-branch-name-${index}`} className={styles.subTitle}>{obj.name}</div>
+            })
+          }
         </div>
         <div className={styles.item}>
           <div className={styles.title}>

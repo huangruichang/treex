@@ -3,15 +3,35 @@
   font-size: 12px;
   cursor: pointer;
   .item {
+    .hoverShow {
+      display: none;
+    }
+    &:hover .hoverShow {
+      display: inline;
+      color: #968f8f;
+    }
+    &:hover .hoverHidden {
+      display: none;
+    }
+    .hoverHidden, .hoverShow {
+      float: right;
+      margin: 8px 7px 0 0;
+    }
+    .hidden {
+      display: none;
+    }
     .title {
-      padding: 5px 0 5px 20px;
+      padding: 5px 0 5px 10px;
       .icon {
-        width: 50px;
+        display: inline-block;
+        margin-right: 5px;
       }
       .text {
 
       }
-
+    }
+    &.hideSubTitle .subTitle {
+      display: none;
     }
     .subTitle {
       padding: 5px 0 5px 40px;

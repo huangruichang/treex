@@ -12,6 +12,7 @@ const mapStateToProps = (state) => {
   return {
     repo: state.repo.repo,
     fileModifiedCount: state.repo.fileModifiedCount,
+    branches: state.repo.branches,
   }
 }
 
@@ -41,12 +42,43 @@ export default class Repo extends Component {
     }
   }
 
+  getLocalBranches(branches) {
+    let localBranches = branches.filter((branch) => {
+      return branch.indexOf('refs/heads') != -1
+    })
+    localBranches = localBranches.map((branch) => {
+      return {
+        name: branch.replace(/refs\/heads\//g, ''),
+        path: branch,
+      }
+    })
+    return localBranches
+  }
+
+  getRemoteBranches(branches) {
+    let remoteBranches = branches.filter((branch) => {
+      return branch.indexOf('refs/remotes') != -1
+    })
+    remoteBranches = remoteBranches.map((branch) => {
+      return {
+        name: branch.replace(/refs\/remotes\//g, '').split('\/')[1],
+        path: branch,
+      }
+    })
+    return remoteBranches
+  }
+
   render() {
     let Page = this.props.page || <HisotryPage {...this.props}/>
     return (
       <div className={styles.repo}>
         <div className={styles.panelLeft}>
-          <SideBar fileModifiedCount={this.props.fileModifiedCount} params={this.props.params}/>
+          <SideBar
+            fileModifiedCount={this.props.fileModifiedCount}
+            localBranches={this.getLocalBranches(this.props.branches)}
+            remoteBranches={this.getRemoteBranches(this.props.branches)}
+            params={this.props.params}
+          />
         </div>
         <div className={styles.panelRight}>
           {(Page)}

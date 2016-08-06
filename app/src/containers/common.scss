@@ -25,9 +25,13 @@ body {
   display: inline-block;
 }
 
+.txIcon.big:before {
+  font-size: 24px;
+}
+
 .codeFork:before {
   @extend .txIcon;
-  content: '\e617;';
+  content: '\e617';
 }
 
 .bucket:before {
@@ -37,25 +41,25 @@ body {
 
 .search:before {
   @extend .txIcon;
-  content: '\e672;';
+  content: '\e672';
 }
 
 .setting:before {
   @extend .txIcon;
-  content: '\e655;';
+  content: '\e655';
 }
 
 .iconCodeFork:before {
   @extend .txIcon;
-  content: '\e652;';
+  content: '\e652';
 }
 
 .tag:before {
   @extend .txIcon;
-  content: '\e6f5;';
+  content: '\e6f5';
 }
 
 .cloud:before {
   @extend .txIcon;
-  content: '\e62e;'
+  content: '\e62e'
 }

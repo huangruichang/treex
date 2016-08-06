@@ -175,6 +175,7 @@ export const INIT_SIDEBAR = 'INIT_SIDEBAR'
 export const INIT_SIDEBAR_FAILED = 'INIT_SIDEBAR_FAILED'
 
 export const initSideBar = (repo) => {
+  let data = {}
   return dispatch => {
     repo.getHeadCommit().then((commit) => {
       return commit.getTree()
@@ -183,9 +184,13 @@ export const initSideBar = (repo) => {
     }).then((diff) => {
       return diff.patches()
     }).then((arrayConvenientPatch) => {
+      data.fileModifiedCount = arrayConvenientPatch.length
+      return repo.getReferenceNames(Reference.TYPE.LISTALL)
+    }).then((arrayString) => {
+      data.branches = arrayString
       dispatch({
         type: INIT_SIDEBAR,
-        fileModifiedCount: arrayConvenientPatch.length,
+        ...data,
       })
     }).catch((e) => {
       dispatch({

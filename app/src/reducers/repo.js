@@ -34,6 +34,7 @@ const initalState = {
   diffPatches: [],
   unstagedPatches: [],
   stagedPatches: [],
+  branches: [],
 }
 
 export default (state = initalState, action) => {
@@ -54,6 +55,7 @@ export default (state = initalState, action) => {
       return {
         ...state,
         fileModifiedCount: action.fileModifiedCount,
+        branches: action.branches,
       }
     case LOAD_COMMIT_DIFF_FILES:
       return {
