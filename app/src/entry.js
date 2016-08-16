@@ -3,7 +3,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, hashHistory } from 'react-router'
-import { App, Repo, DevTools, FileStatePage, HistoryPage } from './containers'
+import { App, Repo, DevTools, FileStatePage, HistoryPage, BranchHistoryPage } from './containers'
 import { listProject } from './actions'
 
 import configureStore from './store/configureStore'
@@ -20,6 +20,10 @@ const component = (
     <Route path="/repo/:project" component={Repo}>
       <Route path="history" components={{ page: HistoryPage }}/>
       <Route path="fileState" components={{ page: FileStatePage }}/>
+      {<Route path="branches/:branch" components={{ page: BranchHistoryPage }}/>}
+      {/*<Route path="branches">
+        <Route path=":branch" component={BranchHistoryPage} />
+      </Route>*/}
     </Route>
   </Router>
 )

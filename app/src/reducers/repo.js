@@ -22,6 +22,8 @@ import {
   STAGE_ALL_FILE_LINES_FAIL,
   CREATE_COMMIT_ON_HEAD,
   CREATE_COMMIT_ON_HEAD_FAIL,
+  INIT_HISTORY_PAGE,
+  INIT_HISTORY_PAGE_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -43,6 +45,16 @@ export default (state = initalState, action) => {
       return {
         ...state,
         repo: action.repo,
+      }
+    case INIT_HISTORY_PAGE:
+      return {
+        ...state,
+        stagedPatches: action.stagedPatches,
+        unstagedPatches: action.unstagedPatches,
+        diffPatches: action.diffPatches,
+        commitDiffFiles: action.commitDiffFiles,
+        commitInfo: action.commitInfo,
+        histories: action.histories,
       }
     case LOAD_HISTORIES:
       return {
@@ -136,6 +148,9 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case CREATE_COMMIT_ON_HEAD_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_HISTORY_PAGE_FAIL:
       alert(action.msg)
       return state
     default:

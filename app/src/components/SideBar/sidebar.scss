@@ -38,6 +38,18 @@
       display: block;
       text-decoration: none;
       color: #000;
+      position: relative;
+      .headMark {
+        display: inline-block;
+        position: absolute;
+        left: 22px;
+        top: 5px;
+        border: 2px solid #999;
+        background: #fff;
+        height: 10px;
+        width: 10px;
+        border-radius: 10px;
+      }
     }
     .subTitle.active {
       background: #125fc8;

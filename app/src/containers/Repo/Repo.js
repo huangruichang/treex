@@ -44,12 +44,13 @@ export default class Repo extends Component {
 
   getLocalBranches(branches) {
     let localBranches = branches.filter((branch) => {
-      return branch.indexOf('refs/heads') != -1
+      return branch.name().indexOf('refs/heads') != -1
     })
     localBranches = localBranches.map((branch) => {
       return {
-        name: branch.replace(/refs\/heads\//g, ''),
-        path: branch,
+        name: branch.name().replace(/refs\/heads\//g, ''),
+        path: branch.name(),
+        isHead: branch.isHead(),
       }
     })
     return localBranches
@@ -57,12 +58,13 @@ export default class Repo extends Component {
 
   getRemoteBranches(branches) {
     let remoteBranches = branches.filter((branch) => {
-      return branch.indexOf('refs/remotes') != -1
+      return branch.name().indexOf('refs/remotes') != -1
     })
     remoteBranches = remoteBranches.map((branch) => {
       return {
-        name: branch.replace(/refs\/remotes\//g, '').split('\/')[1],
-        path: branch,
+        name: branch.name().replace(/refs\/remotes\//g, '').split('\/')[1],
+        path: branch.name(),
+        isHead: branch.isHead(),
       }
     })
     return remoteBranches

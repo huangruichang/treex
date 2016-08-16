@@ -76,8 +76,20 @@ export default class SideBar extends Component {
             >显示</span>
           </div>
           {
+            // this.props.localBranches.map((obj, index) => {
+            //   return <div key={`local-branch-name-${index}`} className={styles.subTitle}>
+            //     <div className={styles.headMark} style={{ display: obj.isHead? 'inline-block': 'none' }}></div>
+            //     {obj.name}
+            //   </div>
+            // })
             this.props.localBranches.map((obj, index) => {
-              return <div key={`local-branch-name-${index}`} className={styles.subTitle}>{obj.name}</div>
+              return <Link key={`local-branch-name-${index}`}
+                           className={styles.subTitle}
+                           activeClassName={styles.active}
+                           to={`/repo/${this.props.params.project}/branches/${obj.name}`}>
+                <div className={styles.headMark} style={{ display: obj.isHead? 'inline-block': 'none' }}></div>
+                {obj.name}
+              </Link>
             })
           }
         </div>

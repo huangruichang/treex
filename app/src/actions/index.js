@@ -5,6 +5,7 @@ import { Repository, Diff, Reference, Signature } from 'nodegit'
 import fileAsync from 'lowdb/lib/file-async'
 import { join } from 'path'
 import { exec } from 'child_process'
+import * as Helper from '../helpers'
 
 export const REMOVE_PROJECT = 'REMOVE_PROJECT'
 export const LIST_PROJECT = 'LIST_PROJECT'
@@ -141,12 +142,25 @@ export const openRepo = (projectName) => {
   win.show()
 }
 
-const HISTORIES_LIMIT = 100
+const HISTORIES_LIMIT = 50
 
-export const initHistories = (repo, historiesLimit) => {
-  return dispatch => {
-    repo.getHeadCommit().then((commit) => {
-      historiesHandler(commit, dispatch, historiesLimit)
+export const APPEND_HISTORIES = 'APPEND_HISTORIES'
+export const appendHistories = ({ repo, historiesLimit, branch }) => {
+  return (dispatch) => {
+    Promise.resolve().then(() => {
+      if (branch) {
+        return repo.getBranch(branch).then((reference) => {
+          return repo.getReferenceCommit(reference)
+        })
+      }
+      return repo.getHeadCommit()
+    }).then((commit) => {
+      return Helper.getHistories(commit, historiesLimit)
+    }).then((histories) => {
+      dispatch({
+        type: APPEND_HISTORIES,
+        histories: histories,
+      })
     }).catch((e) => {
       dispatch({
         type: LOAD_HISTORIES_FAIL,
@@ -156,15 +170,58 @@ export const initHistories = (repo, historiesLimit) => {
   }
 }
 
-const APPEND_HISTORIES = 'APPEND_HISTORIES'
-
-export const appendHistories = (repo, historiesLimit) => {
-  return dispatch => {
-    repo.getHeadCommit().then((commit) => {
-      historiesHandler(commit, dispatch, historiesLimit, APPEND_HISTORIES)
+export const INIT_HISTORY_PAGE = 'INIT_HISTORY_PAGE'
+export const INIT_HISTORY_PAGE_FAIL = 'INIT_HISTORY_PAGE_FAIL'
+export const initHistoryPage = (repo, branch) => {
+  let unstagedPatches
+  let stagedPatches
+  let diffPatches
+  let headCommit
+  return (dispatch) => {
+    let unstagedPromise = Helper.getUnstagedPatches(repo)
+    let stagedPromise = Helper.getStagedPatches(repo)
+    let headCommitPromise = Helper.getBranchHeadCommit(repo, branch)
+    return Promise.all([unstagedPromise, stagedPromise, headCommitPromise]).then({
+    }).then((args) => {
+      unstagedPatches = args[0] || []
+      stagedPatches = args[1] || []
+      headCommit = args[2]
+      if (unstagedPatches.length > 0 || stagedPatches.length > 0) {
+        let patch
+        if (unstagedPatches.length > 0) {
+          patch = unstagedPatches[0]
+        } else {
+          patch = stagedPatches[0]
+        }
+        return Promise.resolve(patch)
+      } else {
+        return Helper.getDiff(headCommit).then((arrayDiff) => {
+          return arrayDiff[0].patches()
+        }).then((arrayConvenientPatch) => {
+          return Promise.resolve(arrayConvenientPatch[0])
+        })
+      }
+    }).then((patch) => {
+      return Helper.getDiffLines(patch)
+    }).then((arrayHunk) => {
+      diffPatches = arrayHunk
+      let commitDiffFilesPromise = Helper.getCommitDiffFiles(repo, headCommit.id())
+      let commitInfoPromise = Helper.getCommitInfo(repo, headCommit.id())
+      let historiesPromise = Helper.getHistories(headCommit, HISTORIES_LIMIT)
+      return Promise.all([commitDiffFilesPromise, commitInfoPromise, historiesPromise])
+    }).then((args) => {
+      dispatch({
+        type: INIT_HISTORY_PAGE,
+        stagedPatches: stagedPatches,
+        unstagedPatches: unstagedPatches,
+        diffPatches: diffPatches,
+        commitDiffFiles: args[0],
+        commitInfo: args[1],
+        histories: args[2]
+      })
     }).catch((e) => {
       dispatch({
-        type: LOAD_HISTORIES_FAIL,
+        type: INIT_HISTORY_PAGE_FAIL,
         msg: e,
       })
     })
@@ -180,14 +237,18 @@ export const initSideBar = (repo) => {
     repo.getHeadCommit().then((commit) => {
       return commit.getTree()
     }).then((tree) => {
-      return Diff.treeToWorkdirWithIndex(repo, tree, null)
+      return Diff.treeToWorkdirWithIndex(repo, tree, {
+        flags:
+        Diff.OPTION.SHOW_UNTRACKED_CONTENT |
+        Diff.OPTION.RECURSE_UNTRACKED_DIRS
+      })
     }).then((diff) => {
       return diff.patches()
     }).then((arrayConvenientPatch) => {
       data.fileModifiedCount = arrayConvenientPatch.length
-      return repo.getReferenceNames(Reference.TYPE.LISTALL)
-    }).then((arrayString) => {
-      data.branches = arrayString
+      return repo.getReferences(Reference.TYPE.LISTALL)
+    }).then((arrayReference) => {
+      data.branches = arrayReference
       dispatch({
         type: INIT_SIDEBAR,
         ...data,
@@ -201,70 +262,11 @@ export const initSideBar = (repo) => {
   }
 }
 
-const historiesHandler = (commit ,dispatch, hisotriesLimit = HISTORIES_LIMIT, REDUCER_TYPE = LOAD_HISTORIES) => {
-  const eventEmitter = commit.history()
-  const histories = []
-  let flag = false
-  let currentCommit
-  eventEmitter.on('commit', (commit) => {
-    if (histories.length < hisotriesLimit || flag) {
-      const history = {
-        desc: commit.message(),
-        author: commit.author().toString(),
-        commitId: commit.id().toString(),
-        date: commit.date().toString(),
-      }
-      histories.push(history)
-      currentCommit = commit
-    } else {
-      const action = {
-        type: LOAD_HISTORIES,
-        histories: histories,
-        currentCommit: currentCommit,
-      }
-      dispatch(action)
-      flag = true
-    }
-  })
-  eventEmitter.on('end', () => {
-    if (histories.length <= HISTORIES_LIMIT) {
-      const action = {
-        type: REDUCER_TYPE,
-        histories: histories,
-        currentCommit: currentCommit,
-      }
-      dispatch(action)
-    }
-  })
-  eventEmitter.on('error', (error) => {
-    dispatch({
-      type: LOAD_HISTORIES_FAIL,
-      msg: error,
-    })
-  })
-  eventEmitter.start()
-}
-
 export const LOAD_COMMIT_DIFF_FILES = 'LOAD_COMMIT_DIFF_FILES'
 export const LOAD_COMMIT_DIFF_FILES_FAIL = 'LOAD_COMMIT_DIFF_FILES_FAIL'
-
 export const loadCommitDiffFiles = (repo, commitId) => {
   return (dispatch) => {
-    repo.getCommit(commitId).then((commit) => {
-      return commit.getDiff()
-    }).then((arrayDiff) => {
-      let promises = []
-      for (let diff of arrayDiff) {
-        promises.push(diff.patches())
-      }
-      return Promise.all(promises)
-    }).then((args) => {
-      let files = []
-      for (let arrayConvenientPatch of args) {
-        for (let convenientPatch of arrayConvenientPatch) {
-          files.push(convenientPatch)
-        }
-      }
+    Helper.getCommitDiffFiles(repo, commitId).then((files) => {
       dispatch({
         type: LOAD_COMMIT_DIFF_FILES,
         commitDiffFiles: files,
@@ -278,27 +280,11 @@ export const loadCommitDiffFiles = (repo, commitId) => {
   }
 }
 
-
 export const LOAD_COMMIT_INFO = 'LOAD_COMMIT_INFO'
 export const LOAD_COMMIT_INFO_FAIL = 'LOAD_COMMIT_INFO_FAIL'
 export const loadCommitInfo = (repo, commitId) => {
   return (dispatch) => {
-    let _commit
-    repo.getCommit(commitId).then((commit) => {
-      _commit = commit
-      return commit.getParents()
-    }).then((arrayCommit) => {
-      let parents = []
-      for (let commit of arrayCommit) {
-        parents.push(commit.id().toString().slice(0, 5))
-      }
-      const commitInfo = {
-        desc: _commit.message(),
-        author: _commit.author().toString(),
-        commitId: _commit.id().toString(),
-        date: _commit.date().toString(),
-        parents: parents,
-      }
+    Helper.getCommitInfo(repo, commitId).then((commitInfo) => {
       dispatch({
         type: LOAD_COMMIT_INFO,
         commitInfo: commitInfo,
@@ -348,18 +334,8 @@ export const loadDiffLines = (convenientPatch) => {
 export const LOAD_STAGED_FILES = 'LOAD_STAGED_FILES'
 export const LOAD_STAGED_FILES_FAIL = 'LOAD_STAGED_FILES_FAIL'
 export const loadStagedFiles = (repo) => {
-  let index
   return ((dispatch) => {
-    repo.index().then((idx) => {
-      index = idx
-      return repo.getHeadCommit()
-    }).then((commit) => {
-      return commit.getTree()
-    }).then((tree) => {
-      return Diff.treeToIndex(repo, tree, index, null)
-    }).then((diff) => {
-      return diff.patches()
-    }).then((patches) => {
+    Helper.getStagedPatches(repo).then((patches) => {
       dispatch({
         type: LOAD_STAGED_FILES,
         stagedPatches: patches,
@@ -377,11 +353,7 @@ export const LOAD_UNSTAGED_FILES = 'LOAD_UNSTAGED_FILES'
 export const LOAD_UNSTAGED_FILES_FAIL = 'LOAD_UNSTAGED_FILES_FAIL'
 export const loadUnstagedFiles = (repo) => {
   return (dispatch) => {
-    repo.index().then((index) => {
-      return Diff.indexToWorkdir(repo, index, null)
-    }).then((diff) => {
-      return diff.patches()
-    }).then((patches) => {
+    Helper.getUnstagedPatches(repo).then((patches) => {
       dispatch({
         type: LOAD_UNSTAGED_FILES,
         unstagedPatches: patches,
@@ -396,23 +368,13 @@ export const loadUnstagedFiles = (repo) => {
 }
 
 const loadStageAndUnStage = (dispatch, type, repo) => {
-  return repo.refreshIndex().then((index) => {
-    let stagePromise = Diff.indexToWorkdir(repo, index, null).then((diff) => {
-      return diff.patches()
-    })
-    let unstagePromise = repo.getHeadCommit().then((commit) => {
-      return commit.getTree()
-    }).then((tree) => {
-      return Diff.treeToIndex(repo, tree, index, null)
-    }).then((diff) => {
-      return diff.patches()
-    })
-    return Promise.all([stagePromise, unstagePromise]).then((args) => {
-      dispatch({
-        type: type,
-        unstagedPatches: args[0],
-        stagedPatches: args[1],
-      })
+  let stagePromise = Helper.getUnstagedPatches(repo)
+  let unstagePromise = Helper.getStagedPatches(repo)
+  return Promise.all([stagePromise, unstagePromise]).then((args) => {
+    dispatch({
+      type: type,
+      unstagedPatches: args[0],
+      stagedPatches: args[1],
     })
   })
 }
@@ -469,7 +431,14 @@ export const stageFileLines = (repo, patch, isStaged, lineNum = -1) => {
   return (dispatch) => {
     let promise
     if (lineNum === -1) {
-      promise = stageOnePatch(repo, patch, isStaged).then(() => {
+      if (patch.isUntracked()) {
+        promise = Helper.addFileToIndex(repo, patch.newFile().path())
+      } else if (!patch.isModified()) {
+        promise = Helper.removeFileFromIndex(repo, patch.oldFile().path())
+      } else {
+        promise = stageOnePatch(repo, patch, isStaged)
+      }
+      return promise.then(() => {
         return loadStageAndUnStage(dispatch, STAGE_FILE_LINES, repo)
       })
     }
@@ -490,7 +459,13 @@ export const stageAllFileLines = (repo, patches, isStaged) => {
     let head = Promise.resolve()
     for (let patch of patches) {
       head = head.then(() => {
-        return stageOnePatch(repo, patch, isStaged)
+        if (patch.isUntracked()) {
+          return Helper.addFileToIndex(repo, patch.newFile().path())
+        } else if (!patch.isModified()) {
+          return Helper.removeFileFromIndex(repo, patch.oldFile().path())
+        } else {
+          return stageOnePatch(repo, patch, isStaged)
+        }
       })
     }
     head.then(() => {

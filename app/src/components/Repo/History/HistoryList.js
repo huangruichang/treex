@@ -14,6 +14,7 @@ export default class HistoryList extends Component {
     onScrollBottom: PropTypes.func.isRequired,
     hasUnCommittedHistory: PropTypes.bool,
     onUnCommittedHistory: PropTypes.func,
+    prefix: PropTypes.string,
   }
 
   constructor(props) {
@@ -77,7 +78,7 @@ export default class HistoryList extends Component {
                     commitId={obj.commitId}
                     author={obj.author}
                     date={obj.date}
-                    key={`repo-history-${index}`}
+                    key={`${this.props.prefix?(this.props.prefix+'-'):''}repo-history-${index}-${obj.commitId}`}
                     onClick={this.props.onItemClick}
                 />
         })}

@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { RESET_DIFF_LINES } from '../../actions'
 import {
+  initHistoryPage,
   initHistories,
   appendHistories,
   loadCommitDiffFiles,
@@ -16,7 +17,7 @@ import {
 import { HistoryList, CommitFileList, CommitInfo, DiffPanel } from '../../components'
 
 let GLOBAL_REPO
-let HISTORIES_COUNT = 100
+let HISTORIES_COUNT = 50
 
 const mapStateToProps = (state) => {
   return {
@@ -39,7 +40,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(loadCommitInfo(GLOBAL_REPO, commitId))
     },
     onHistoryScrollBottom: () => {
-      dispatch(appendHistories(GLOBAL_REPO, HISTORIES_COUNT += 100))
+      dispatch(appendHistories({
+        repo: GLOBAL_REPO,
+        historiesLimit: HISTORIES_COUNT += 50,
+      }))
     },
     onCommitDiffFileClick: (patch) => {
       dispatch(loadDiffLines(patch))
@@ -89,7 +93,8 @@ export default class HistoryPage extends Component {
   componentWillMount() {
     const { repo, store } = this.props
     if (repo && store) {
-      store.dispatch(initHistories(repo))
+      const { params } = this.props
+      store.dispatch(initHistoryPage(repo, params.branch))
       GLOBAL_REPO = repo
     }
   }
@@ -97,51 +102,21 @@ export default class HistoryPage extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.repo && !!nextProps.repo) {
       const { repo, store } = nextProps
-      store.dispatch(initHistories(repo))
+      const { params } = this.props
+      store.dispatch(initHistoryPage(repo, params.branch))
       GLOBAL_REPO = repo
     }
 
-    if (nextProps.fileModifiedCount > 0 && !this.uncommittedHisotryInit) {
+    if (nextProps.stagedPatches && nextProps.unstagedPatches && !this.uncommittedHisotryInit) {
       this.uncommittedHisotryInit = true
-      const { store } = this.props
-      store.dispatch(loadStagedFiles(GLOBAL_REPO))
-      store.dispatch(loadUnstagedFiles(GLOBAL_REPO))
-      return
-    }
-
-    if (this.uncommittedHisotryInit
-      && !this.uncommittedHisotryDiffFilesInit
-      && (this.props.stagedPatches.length > 0
-          || this.props.unstagedPatches.length > 0)) {
-      this.uncommittedHisotryDiffFilesInit = true
-      this.commitDiffFilesInit = true
-      const { store } = this.props
-      if (this.props.stagedPatches.length > 0) {
-        store.dispatch(loadDiffLines(this.props.stagedPatches[0]))
-      } else if (this.props.unstagedPatches.length > 0) {
-        store.dispatch(loadDiffLines(this.props.unstagedPatches[0]))
+      let { stagedPatches, unstagedPatches } = nextProps
+      if ((stagedPatches.length > 0 || unstagedPatches.length > 0)) {
+        this.uncommittedHisotryHidden = false
+      } else {
+        if (!this.uncommittedHisotryInit) {
+          this.uncommittedHisotryHidden = true
+        }
       }
-      return
-    }
-
-    if (nextProps.histories.length > 0 && !this.historiesInit) {
-      this.historiesInit = true
-      const { store } = this.props
-      const firstHistory = nextProps.histories[0]
-      if (this.uncommittedHisotryInit || this.uncommittedHisotryDiffFilesInit) {
-        return
-      }
-      this.uncommittedHisotryHidden = true
-      store.dispatch(loadCommitDiffFiles(GLOBAL_REPO, firstHistory.commitId))
-      store.dispatch(loadCommitInfo(GLOBAL_REPO, firstHistory.commitId))
-      return
-    }
-
-    if (nextProps.commitDiffFiles.length > 0 && !this.commitDiffFilesInit) {
-      this.commitDiffFilesInit = true
-      const { store } = this.props
-      const firstCommitDiffFile = nextProps.commitDiffFiles[0]
-      store.dispatch(loadDiffLines(firstCommitDiffFile))
     }
   }
 
@@ -207,7 +182,6 @@ export default class HistoryPage extends Component {
       uppperBox = stagedFileList
       lowerBox = unstagedFileList
     }
-
     return (
       <div>
         <HistoryList
@@ -216,6 +190,7 @@ export default class HistoryPage extends Component {
           onScrollBottom={this.props.onHistoryScrollBottom}
           hasUnCommittedHistory={this.props.fileModifiedCount > 0}
           onUnCommittedHistory={::this.showUncommittedHistory}
+          prefix={`history-page-${this.props.params.project}-${this.props.params.branch}`}
         />
         <div style={{
           display: 'flex',

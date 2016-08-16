@@ -148,9 +148,8 @@ export default class FileStatePage extends Component {
   }
 
   render() {
-    let unstagedFileList = this.props.unstagedPatches.length > 0 ?
-      <CommitFileList
-        commitDiffFiles={this.props.unstagedPatches}
+    let unstagedFileList = <CommitFileList
+        commitDiffFiles={this.props.unstagedPatches || []}
         onItemClick={this.props.onCommitDiffFileClick}
         style={{
           height: 250,
@@ -158,10 +157,9 @@ export default class FileStatePage extends Component {
         mode={'unstaged'}
         onStageClick={this.props.onStageClick}
         onStageAllClick={this.props.onStageAllClick}
-      /> : ''
-    let stagedFileList = this.props.stagedPatches.length > 0 ?
-      <CommitFileList
-        commitDiffFiles={this.props.stagedPatches}
+      />
+    let stagedFileList = <CommitFileList
+        commitDiffFiles={this.props.stagedPatches || []}
         onItemClick={this.props.onCommitDiffFileClick}
         style={{
           height: 250,
@@ -169,7 +167,7 @@ export default class FileStatePage extends Component {
         mode={'staged'}
         onUnStageClick={this.props.onUnStageClick}
         onUnStageAllClick={this.props.onUnStageAllClick}
-      /> : ''
+      />
     return (
       <div>
         <div className={styles.container}>
