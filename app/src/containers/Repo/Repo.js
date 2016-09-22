@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { SideBar } from '../../components'
 import { loadRepo, initSideBar } from '../../actions'
 import HisotryPage from '../HisotryPage/HistoryPage'
+import { checkoutBranch } from '../../actions'
 
 require('!style!css!sass!../common.scss')
 const styles = require('./Repo.scss')
@@ -16,8 +17,17 @@ const mapStateToProps = (state) => {
   }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onCheckoutBranchClick: (repo, branchName) => {
+      dispatch(checkoutBranch(repo, branchName))
+    },
+  }
+}
+
 @connect(
   mapStateToProps,
+  mapDispatchToProps,
 )
 export default class Repo extends Component {
 
@@ -57,7 +67,16 @@ export default class Repo extends Component {
   }
 
   getRemoteBranches(branches) {
+
+    let _branchNames = []
+
     let remoteBranches = branches.filter((branch) => {
+      for (let _branchName of _branchNames) {
+        if (_branchName === branch.name()) {
+          return false
+        }
+      }
+      _branchNames.push(branch.name())
       return branch.name().indexOf('refs/remotes') != -1
     })
     remoteBranches = remoteBranches.map((branch) => {
@@ -80,6 +99,8 @@ export default class Repo extends Component {
             localBranches={this.getLocalBranches(this.props.branches)}
             remoteBranches={this.getRemoteBranches(this.props.branches)}
             params={this.props.params}
+            repo={this.props.repo}
+            onCheckoutBranchClick={this.props.onCheckoutBranchClick}
           />
         </div>
         <div className={styles.panelRight}>

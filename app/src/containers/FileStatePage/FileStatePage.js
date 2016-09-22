@@ -50,7 +50,7 @@ const mapDispatchToProps = (dispatch) => {
         repo: GLOBAL_REPO,
         commitMessage,
         author: user,
-        callback: callback
+        callback: callback,
       }))
     },
   }

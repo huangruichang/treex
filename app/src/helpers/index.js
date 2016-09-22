@@ -1,5 +1,5 @@
 
-import { Repository, Diff, Reference, Signature } from 'nodegit'
+import { Diff } from 'nodegit'
 
 export const addFileToIndex = (repo, fileName) => {
   let index
@@ -26,7 +26,7 @@ export const getUnstagedPatches = (repo) => {
     return Diff.indexToWorkdir(repo, index, {
       flags:
       Diff.OPTION.SHOW_UNTRACKED_CONTENT |
-      Diff.OPTION.RECURSE_UNTRACKED_DIRS
+      Diff.OPTION.RECURSE_UNTRACKED_DIRS,
     })
   }).then((diff) => {
     return diff.patches()
@@ -152,4 +152,8 @@ export const getHistories = (commit, historiesLimit) => {
     })
     eventEmitter.start()
   })
+}
+
+export const checkoutBranch = (repo, branchName) => {
+  return repo.checkoutBranch(branchName)
 }

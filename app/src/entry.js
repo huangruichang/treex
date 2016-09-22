@@ -21,9 +21,6 @@ const component = (
       <Route path="history" components={{ page: HistoryPage }}/>
       <Route path="fileState" components={{ page: FileStatePage }}/>
       {<Route path="branches/:branch" components={{ page: BranchHistoryPage }}/>}
-      {/*<Route path="branches">
-        <Route path=":branch" component={BranchHistoryPage} />
-      </Route>*/}
     </Route>
   </Router>
 )

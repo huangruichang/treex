@@ -50,6 +50,25 @@
         width: 10px;
         border-radius: 10px;
       }
+      .hoverText {
+        display: none;
+        color: #dfdfdf;
+        float: right;
+        margin-right: 7px;
+      }
+      .hoverText:hover {
+        color: #fff;
+      }
+      &:hover .hoverText {
+        display: inline-block;
+      }
+      .branchName {
+        display: inline-block;
+        max-width: 50px;
+      }
+      & > * {
+        vertical-align: middle;
+      }
     }
     .subTitle.active {
       background: #125fc8;
@@ -57,4 +76,39 @@
       outline: none;
     }
   }
+}
+
+.triangle {
+  display: inline-block;
+  position: relative;
+}
+
+.triangle:before {
+  display: inline-block;
+  bottom: 0;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(194, 225, 245, 0);
+  border-bottom-color: #999;
+  border-width: 10px;
+  transform: scaleX(0.6);
+}
+
+.triangle.up:before {
+  display: inline-block;
+  top: -8px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(194, 225, 245, 0);
+  border-top-color: #999;
+  border-width: 10px;
+  transform: scaleX(0.6);
 }

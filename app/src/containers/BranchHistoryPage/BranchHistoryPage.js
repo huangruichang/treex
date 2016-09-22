@@ -1,5 +1,5 @@
 
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import HistoryPage from '../HisotryPage/HistoryPage'
 
 export default class BranchHistoryPage extends Component {

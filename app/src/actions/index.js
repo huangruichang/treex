@@ -217,7 +217,7 @@ export const initHistoryPage = (repo, branch) => {
         diffPatches: diffPatches,
         commitDiffFiles: args[0],
         commitInfo: args[1],
-        histories: args[2]
+        histories: args[2],
       })
     }).catch((e) => {
       dispatch({
@@ -240,7 +240,7 @@ export const initSideBar = (repo) => {
       return Diff.treeToWorkdirWithIndex(repo, tree, {
         flags:
         Diff.OPTION.SHOW_UNTRACKED_CONTENT |
-        Diff.OPTION.RECURSE_UNTRACKED_DIRS
+        Diff.OPTION.RECURSE_UNTRACKED_DIRS,
       })
     }).then((diff) => {
       return diff.patches()
@@ -481,7 +481,7 @@ export const stageAllFileLines = (repo, patches, isStaged) => {
 
 export const CREATE_COMMIT_ON_HEAD = 'CREATE_COMMIT_ON_HEAD'
 export const CREATE_COMMIT_ON_HEAD_FAIL = 'CREATE_COMMIT_ON_HEAD_FAIL'
-export const createCommitOnHead = ({repo, commitMessage, author, committer = author, callback}) => {
+export const createCommitOnHead = ({ repo, commitMessage, author, callback }) => {
   return (dispatch) => {
     let index, oid
     repo.refreshIndex().then((idx) => {
@@ -510,3 +510,22 @@ export const createCommitOnHead = ({repo, commitMessage, author, committer = aut
   }
 }
 
+export const CHECKOUT_BRANCH = 'CHECKOUT_BRANCH'
+export const CHECKOUT_BRANCH_FAIL = 'CHECKOUT_BRANCH_FAIL'
+export const checkoutBranch = (repo, branchName) => {
+  return (dispatch) => {
+    Helper.checkoutBranch(repo, branchName).then(() => {
+      return repo.getReferences(Reference.TYPE.LISTALL)
+    }).then((arrayReference) => {
+      dispatch({
+        type: CHECKOUT_BRANCH,
+        branches: arrayReference,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: CHECKOUT_BRANCH_FAIL,
+        msg: e,
+      })
+    })
+  }
+}

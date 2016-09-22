@@ -24,6 +24,8 @@ import {
   CREATE_COMMIT_ON_HEAD_FAIL,
   INIT_HISTORY_PAGE,
   INIT_HISTORY_PAGE_FAIL,
+  CHECKOUT_BRANCH,
+  CHECKOUT_BRANCH_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -123,6 +125,11 @@ export default (state = initalState, action) => {
         stagedPatches: action.stagedPatches,
         fileModifiedCount: action.unstagedPatches.length + action.stagedPatches.length,
       }
+    case CHECKOUT_BRANCH:
+      return {
+        ...state,
+        branches: action.branches,
+      }
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -151,6 +158,9 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case INIT_HISTORY_PAGE_FAIL:
+      alert(action.msg)
+      return state
+    case CHECKOUT_BRANCH_FAIL:
       alert(action.msg)
       return state
     default:

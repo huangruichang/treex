@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { RESET_DIFF_LINES } from '../../actions'
 import {
   initHistoryPage,
-  initHistories,
   appendHistories,
   loadCommitDiffFiles,
   loadCommitInfo,
