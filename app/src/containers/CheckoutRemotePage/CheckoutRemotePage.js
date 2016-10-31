@@ -35,12 +35,22 @@ export default class CheckoutRemotePage extends Component {
 
   constructor(props) {
     super(props)
+    this.branchName = props.params.branch
   }
 
   componentWillMount() {
     const { store } = this.props
     const { project, branch } = this.props.params
     store.dispatch(initCheckoutRemoteBranchPage(project, branch))
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.selectedBranch) {
+      this.selectedBranch = this.getSelectDefaultValue(
+        this.getRemoteBranches(nextProps.branches),
+        this.props.params.branch
+      ).fullName.replace(/refs\/remotes\//g, '')
+    }
   }
 
   getRemoteBranches(branches) {
@@ -75,11 +85,11 @@ export default class CheckoutRemotePage extends Component {
           <label className={styles.label} for="remote_branches">检出远程分支:</label>
           {
             <select className={styles.input} value={
-              this.getSelectDefaultValue(
-              this.getRemoteBranches(this.props.branches),
-              this.props.params.branch
-              ).name
-            }>
+              this.selectedBranch
+            } onChange={(e) => {
+              this.selectedBranch = e.target.value
+              this.forceUpdate()
+            }}>
               {
                 this.getRemoteBranches(this.props.branches).map((obj, index) => {
                   return <option key={`checkout-remote-branch-${index}`} value={obj.name}
@@ -91,18 +101,17 @@ export default class CheckoutRemotePage extends Component {
         </div>
         <div className={styles.formGroup}>
           <label className={styles.label} for="new_local_branch">新的本地分支名称:</label>
-          <input className={styles.input} id="new_local_branch" type="text" defaultValue={this.props.params.branch}/>
+          <input className={styles.input} id="new_local_branch" type="text" defaultValue={this.branchName} onChange={(e) => {
+            this.branchName = e.target.value
+          }}/>
         </div>
         <div className={styles.buttonGroup}>
           <div className={`${styles.button} ${styles.cancel}`} onClick={this.props.onCancelClick}>取消</div>
           <div className={`${styles.button} ${styles.submit}`} onClick={() => {
             this.props.onSubmitClick(
               this.props.repo,
-              this.props.params.branch,
-              this.getSelectDefaultValue(
-                this.getRemoteBranches(this.props.branches),
-                this.props.params.branch
-              ).fullName
+              this.branchName,
+              this.selectedBranch,
             )
           }}>提交</div>
         </div>
