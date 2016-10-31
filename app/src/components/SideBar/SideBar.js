@@ -12,7 +12,9 @@ export default class SideBar extends Component {
     localBranches: PropTypes.array.isRequired,
     remoteBranches: PropTypes.array.isRequired,
     onCheckoutBranchClick: PropTypes.func.isRequired,
+    onCheckoutRemoteBranchClick: PropTypes.func.isRequired,
     repo: PropTypes.object.isRequired,
+    projectName: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -151,8 +153,8 @@ export default class SideBar extends Component {
               }} key={`remote-origin-${index}`}><Origin
                      origin={origin.origin}
                      branches={origin.branches}
-                     onBranchClick={() => {
-                       console.log('onBranchClick')
+                     onBranchClick={(branch) => {
+                       this.props.onCheckoutRemoteBranchClick(this.props.projectName, branch)
                      }}
               >{origin.origin}</Origin></div>
             })
@@ -202,10 +204,10 @@ class Origin extends Component {
     this.forceUpdate()
   }
 
-  handleBranchClick(e) {
+  handleBranchClick(e, branch) {
     e.stopPropagation()
     e.preventDefault()
-    this.props.onBranchClick && this.props.onBranchClick()
+    this.props.onBranchClick && this.props.onBranchClick(branch)
   }
 
   render() {
@@ -213,7 +215,9 @@ class Origin extends Component {
       this.props.branches.map((branch) => {
         return <div key={`remote-${this.props.origin}-branch-${branch.name}`}
           title={branch.name}
-          onClick={::this.handleBranchClick}
+          onClick={(e) => {
+            ::this.handleBranchClick(e, branch.name)
+          }}
           style={{
             padding: '4px 0 4px 10px',
           }}

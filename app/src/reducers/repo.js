@@ -26,6 +26,10 @@ import {
   INIT_HISTORY_PAGE_FAIL,
   CHECKOUT_BRANCH,
   CHECKOUT_BRANCH_FAIL,
+  INIT_CHECKOUT_REMOTE_BRANCH_PAGE,
+  INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl,
+  REFRESH_BRANCHES,
+  REFRESH_BRANCHES_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -47,6 +51,7 @@ export default (state = initalState, action) => {
       return {
         ...state,
         repo: action.repo,
+        projectName: action.projectName,
       }
     case INIT_HISTORY_PAGE:
       return {
@@ -130,6 +135,17 @@ export default (state = initalState, action) => {
         ...state,
         branches: action.branches,
       }
+    case INIT_CHECKOUT_REMOTE_BRANCH_PAGE:
+      return {
+        ...state,
+        repo: action.repo,
+        branches: action.branches,
+      }
+    case REFRESH_BRANCHES:
+      return {
+        ...state,
+        branches: action.branches,
+      }
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -161,6 +177,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case CHECKOUT_BRANCH_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl:
+      alert(action.msg)
+      return state
+    case REFRESH_BRANCHES_FAIL:
       alert(action.msg)
       return state
     default:

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { SideBar } from '../../components'
 import { loadRepo, initSideBar } from '../../actions'
 import HisotryPage from '../HisotryPage/HistoryPage'
-import { checkoutBranch } from '../../actions'
+import { checkoutBranch, openCheckoutRemoteBranch } from '../../actions'
 
 require('!style!css!sass!../common.scss')
 const styles = require('./Repo.scss')
@@ -14,6 +14,8 @@ const mapStateToProps = (state) => {
     repo: state.repo.repo,
     fileModifiedCount: state.repo.fileModifiedCount,
     branches: state.repo.branches,
+    checkoutWindow: state.repo.checkoutWindow,
+    projectName: state.repo.projectName,
   }
 }
 
@@ -21,6 +23,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onCheckoutBranchClick: (repo, branchName) => {
       dispatch(checkoutBranch(repo, branchName))
+    },
+    onCheckoutRemoteBranchClick: (projectName, branchName) => {
+      dispatch(openCheckoutRemoteBranch(projectName, branchName))
     },
   }
 }
@@ -38,6 +43,11 @@ export default class Repo extends Component {
 
   constructor(props) {
     super(props)
+  }
+
+  refreshBranches() {
+    const { store } = this.props
+    store.dispatch()
   }
 
   componentWillMount() {
@@ -91,17 +101,22 @@ export default class Repo extends Component {
 
   render() {
     let Page = this.props.page || <HisotryPage {...this.props}/>
+    let $sidebar = this.props.repo?
+      <SideBar
+        fileModifiedCount={this.props.fileModifiedCount}
+        localBranches={this.getLocalBranches(this.props.branches)}
+        remoteBranches={this.getRemoteBranches(this.props.branches)}
+        params={this.props.params}
+        repo={this.props.repo}
+        projectName={this.props.projectName}
+        onCheckoutBranchClick={this.props.onCheckoutBranchClick}
+        onCheckoutRemoteBranchClick={this.props.onCheckoutRemoteBranchClick}
+      />
+    :''
     return (
-      <div className={styles.repo}>
+      <div className={styles.repo}>s
         <div className={styles.panelLeft}>
-          <SideBar
-            fileModifiedCount={this.props.fileModifiedCount}
-            localBranches={this.getLocalBranches(this.props.branches)}
-            remoteBranches={this.getRemoteBranches(this.props.branches)}
-            params={this.props.params}
-            repo={this.props.repo}
-            onCheckoutBranchClick={this.props.onCheckoutBranchClick}
-          />
+          {($sidebar)}
         </div>
         <div className={styles.panelRight}>
           {(Page)}

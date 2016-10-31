@@ -117,9 +117,16 @@ export const loadRepo = (projectName) => {
   const dirPath = result.path
   return dispatch => {
     Repository.open(dirPath).then((repo) => {
+      let windows = BrowserWindow.getAllWindows()
+      for (let win of windows) {
+        win.webContents.send('set.projectName', {
+          projectName: projectName,
+        })
+      }
       dispatch({
         type: LOAD_REPO,
         repo: repo,
+        projectName: projectName,
       })
     }).catch((e) => {
       dispatch({
@@ -524,6 +531,84 @@ export const checkoutBranch = (repo, branchName) => {
     }).catch((e) => {
       dispatch({
         type: CHECKOUT_BRANCH_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
+export const openCheckoutRemoteBranch = (project, branch) => {
+  return () => {
+    let win = new BrowserWindow({
+      width: 600,
+      height: 160,
+    })
+    win.loadURL(`file:\/\/${join(__dirname, `index.html#\/checkout\/remote\/${project}\/${branch}`)}`)
+    win.show()
+  }
+}
+
+export const closeFocuseWindow = () => {
+  return () => {
+    BrowserWindow.getFocusedWindow().close()
+  }
+}
+
+export const INIT_CHECKOUT_REMOTE_BRANCH_PAGE = 'INIT_CHECKOUT_REMOTE_BRANCH_PAGE'
+export const INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl = 'INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl'
+export const initCheckoutRemoteBranchPage = (projectName) => {
+  const result = db.get('projects').find({ name: projectName }).value()
+  const dirPath = result.path
+  let repository
+  return dispatch => {
+    Repository.open(dirPath).then((repo) => {
+      repository = repo
+      return repo.getReferences(Reference.TYPE.LISTALL)
+    }).then((arrayReference) => {
+      dispatch({
+        type: INIT_CHECKOUT_REMOTE_BRANCH_PAGE,
+        repo: repository,
+        branches: arrayReference,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl,
+        msg: e,
+      })
+    })
+  }
+}
+
+export const checkoutRemoteBranch = (repo, branchName, branchFullName) => {
+  return () => {
+    Helper.checkoutRemoteBranch(repo, branchName, branchFullName).then(() => {
+      let windows = BrowserWindow.getAllWindows()
+      for (let win of windows) {
+        win.webContents.send('refresh.branches')
+      }
+      BrowserWindow.getFocusedWindow().close()
+    }).catch((e) => {
+      alert(e)
+    })
+  }
+}
+
+export const REFRESH_BRANCHES = 'REFRESH_BRANCHES'
+export const REFRESH_BRANCHES_FAIL = 'REFRESH_BRANCHES_FAIL'
+export const refreshBranches = (projectName) => {
+  return dispatch => {
+    const result = db.get('projects').find({ name: projectName }).value()
+    const dirPath = result.path
+    Repository.open(dirPath).then((repo) => {
+      return repo.getReferences(Reference.TYPE.LISTALL)
+    }).then((arrayReference) => {
+      dispatch({
+        type: REFRESH_BRANCHES,
+        branches: arrayReference,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: REFRESH_BRANCHES_FAIL,
         msg: e,
       })
     })

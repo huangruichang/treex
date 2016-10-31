@@ -1,0 +1,40 @@
+
+.form {
+  padding: 10px;
+  .formGroup {
+    width: 100%;
+    .label {
+      width: 200px;
+      display: inline-block;
+      text-align: right;
+      padding-right: 20px;
+      box-sizing: border-box;
+    }
+    .input {
+      width: 320px;
+      display: inline-block;
+      margin-top: 12px;
+    }
+  }
+  .buttonGroup {
+    text-align: right;
+    font-size: 12px;
+    margin-top: 10px;
+    padding-right: 54px;
+    .button {
+      display: inline-block;
+      border: 1px solid #999;
+      padding: 2px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .cancel {
+      margin: 6px 5px;
+      background: #fff;
+    }
+    .submit {
+      color: #fff;
+      background: #125fc8;
+    }
+  }
+}

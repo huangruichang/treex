@@ -1,5 +1,5 @@
 
-import { Diff } from 'nodegit'
+import { Branch, Diff, Reference } from 'nodegit'
 
 export const addFileToIndex = (repo, fileName) => {
   let index
@@ -156,4 +156,20 @@ export const getHistories = (commit, historiesLimit) => {
 
 export const checkoutBranch = (repo, branchName) => {
   return repo.checkoutBranch(branchName)
+}
+
+export const checkoutRemoteBranch = (repo, branchName, branchFullName) => {
+  let create = (repository, name, fullName, sha, upstreamName) => {
+    let reference
+    return Reference.create(repository, fullName, sha, 0, '').then((ref) => {
+      reference = ref
+      return Branch.setUpstream(reference, upstreamName)
+    }).then(() => {
+      return repository.checkoutBranch(name)
+    })
+  }
+
+  return repo.getReference(branchFullName).then((reference) => {
+    return create(repo, branchName, `refs/heads/${branchName}`, reference.target().tostrS(), branchFullName)
+  })
 }
