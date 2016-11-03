@@ -1,5 +1,7 @@
 
-import { Branch, Diff, Reference } from 'nodegit'
+import { execSync } from 'child_process'
+import { Branch, Diff, Reference, Stash } from 'nodegit'
+import DiffLineHelper from './DiffLine'
 
 export const addFileToIndex = (repo, fileName) => {
   let index
@@ -44,6 +46,93 @@ export const getStagedPatches = (repo) => {
     return Diff.treeToIndex(repo, tree, index, null)
   }).then((diff) => {
     return diff.patches()
+  })
+}
+
+export const getStashPatches = (repo, index = 0) => {
+  return new Promise((resolve, reject) => {
+    try {
+      let filterBlank = (arr = []) => {
+        return arr.filter((element) => {
+          return !!element
+        })
+      }
+
+      let parseHeader = (header) => {
+        header = header.replace(/@@/g, '').trim()
+        let ranges = header.split(' ')
+        let leftRange = ranges[0]
+        let rightRange = ranges[1]
+        let start = +leftRange.split(',')[0].substring(1)
+        return {
+          leftRange: leftRange,
+          rightRange: rightRange,
+          start: start - 1,
+        }
+      }
+
+      const path = repo.path().replace(/\.git\//, '')
+      let result = execSync(`git stash show -p stash@{${index}}`, {
+        cwd: path,
+      })
+
+      let patches = []
+      let tokens = filterBlank(result.toString().split('diff --git'))
+
+      for (let token of tokens) {
+        let info = token.split('\n')
+        let headerReg = /@@\s[-|+]\d+,\d+\s[-|+]\d+,\d+ @@/
+        let headerElement = info[4]
+        let header = parseHeader(headerElement.match(headerReg)[0])
+
+        let rawLines = filterBlank(info.splice(5))
+
+        let leftNo = header.start
+        let rightNo = header.start
+
+        let lines = []
+        for (let rawLine of rawLines) {
+          let oldLineno = ''
+          let newLineno = ''
+          let origin
+          if (rawLine[0] === '\\') {
+            oldLineno = ''
+            newLineno = ''
+            origin = ''
+          } else if (rawLine[0] === '+') {
+            oldLineno = ''
+            rightNo++
+            newLineno = rightNo
+            origin = Diff.LINE.ADDITION
+          } else if (rawLine[0] === '-') {
+            leftNo++
+            oldLineno = leftNo
+            origin = Diff.LINE.DELETION
+          } else if (rawLine === '') {
+            oldLineno = ''
+            newLineno = ''
+            origin = ''
+          } else {
+            leftNo++
+            rightNo++
+            oldLineno = leftNo
+            newLineno = rightNo
+            origin = ''
+          }
+          let content = rawLine.substring(1)
+          lines.push(new DiffLineHelper({
+            oldLineno: oldLineno,
+            newLineno: newLineno,
+            origin: origin,
+            content: content,
+          }))
+        }
+        patches.push(lines)
+      }
+      resolve(patches)
+    } catch (e) {
+      reject(e)
+    }
   })
 }
 
@@ -171,5 +260,22 @@ export const checkoutRemoteBranch = (repo, branchName, branchFullName) => {
 
   return repo.getReference(branchFullName).then((reference) => {
     return create(repo, branchName, `refs/heads/${branchName}`, reference.target().tostrS(), branchFullName)
+  })
+}
+
+export const getStashes = (repo) => {
+  return new Promise((resolve, reject) => {
+    let stashes = []
+    Stash.foreach(repo, (index, stash, oid) => {
+      stashes.push({
+        index: index,
+        stash: stash,
+        oid: oid,
+      })
+    }).then(() => {
+      resolve(stashes)
+    }).catch((e) => {
+      reject(e)
+    })
   })
 }

@@ -16,6 +16,7 @@ const mapStateToProps = (state) => {
     branches: state.repo.branches,
     checkoutWindow: state.repo.checkoutWindow,
     projectName: state.repo.projectName,
+    stashes: state.repo.stashes,
   }
 }
 
@@ -109,6 +110,7 @@ export default class Repo extends Component {
         params={this.props.params}
         repo={this.props.repo}
         projectName={this.props.projectName}
+        stashes={this.props.stashes}
         onCheckoutBranchClick={this.props.onCheckoutBranchClick}
         onCheckoutRemoteBranchClick={this.props.onCheckoutRemoteBranchClick}
       />

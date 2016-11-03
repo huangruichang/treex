@@ -1,0 +1,17 @@
+
+.buttonGroup {
+  margin: 5px;
+  .button {
+    display: inline-block;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    padding: 0 10px;
+    border-radius: 4px;
+    color: #666;
+    margin-right: 10px;
+    &.deletion {
+      background: #d01040;
+      color: #fff;
+    }
+  }
+}

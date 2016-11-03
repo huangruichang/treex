@@ -15,12 +15,14 @@ export default class SideBar extends Component {
     onCheckoutRemoteBranchClick: PropTypes.func.isRequired,
     repo: PropTypes.object.isRequired,
     projectName: PropTypes.string.isRequired,
+    stashes: PropTypes.array.isRequired,
   }
 
   constructor(props) {
     super(props)
     this.isShowLocalBranches = false
     this.isShowRemoteBranches = false
+    this.isShowStashes = false
   }
 
   showLocalBranches() {
@@ -40,6 +42,16 @@ export default class SideBar extends Component {
 
   hideRemoteBranches() {
     this.isShowRemoteBranches = false
+    this.forceUpdate()
+  }
+
+  showStashes() {
+    this.isShowStashes = true
+    this.forceUpdate()
+  }
+
+  hideStashes() {
+    this.isShowStashes = false
     this.forceUpdate()
   }
 
@@ -162,13 +174,38 @@ export default class SideBar extends Component {
             })
           }
         </div>
-        <div className={styles.item}>
+        <div className={`${styles.item} ${!this.isShowStashes? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
-            <div className={styles.icon}></div>
+            <div className={styles.icon}>
+              <i className={'txtIcon bucket big'}></i>
+            </div>
             <span className={styles.text}>已贮藏</span>
+            <span
+              className={this.isShowStashes? styles.hoverShow : styles.hidden}
+              onClick={::this.hideStashes}
+            >隐藏</span>
+            <span
+              className={!this.isShowStashes? styles.hoverShow : styles.hidden}
+              onClick={::this.showStashes}
+            >显示</span>
           </div>
+          {
+            this.props.stashes.map((obj, index) => {
+              return <Link key={`sidebar-stash-${index}`}
+                           className={styles.subTitle}
+                           activeClassName={styles.active}
+                           to={`/repo/${this.props.params.project}/stashes/${obj.index}`}>
+                <span className={`ellipsis ${styles.branchName}`}
+                      title={obj.stash}
+                      style={{
+                        maxWidth: 100,
+                      }}
+                >{obj.stash}</span>
+              </Link>
+            })
+          }
         </div>
-        <div className={styles.item}>
+        {/*<div className={styles.item}>
           <div className={styles.title}>
             <div className={styles.icon}></div>
             <span className={styles.text}>子模块</span>
@@ -179,7 +216,7 @@ export default class SideBar extends Component {
             <div className={styles.icon}></div>
             <span className={styles.text}>子树</span>
           </div>
-        </div>
+        </div>*/}
       </div>
     )
   }

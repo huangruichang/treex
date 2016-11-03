@@ -30,6 +30,8 @@ import {
   INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl,
   REFRESH_BRANCHES,
   REFRESH_BRANCHES_FAIL,
+  INIT_STASH_DETAIL_PAGE,
+  INIT_STASH_DETAIL_PAGE_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -43,6 +45,8 @@ const initalState = {
   unstagedPatches: [],
   stagedPatches: [],
   branches: [],
+  stashes: [],
+  stashPatches: [],
 }
 
 export default (state = initalState, action) => {
@@ -75,6 +79,7 @@ export default (state = initalState, action) => {
         ...state,
         fileModifiedCount: action.fileModifiedCount,
         branches: action.branches,
+        stashes: action.stashes,
       }
     case LOAD_COMMIT_DIFF_FILES:
       return {
@@ -146,6 +151,11 @@ export default (state = initalState, action) => {
         ...state,
         branches: action.branches,
       }
+    case INIT_STASH_DETAIL_PAGE:
+      return {
+        ...state,
+        stashPatches: action.stashPatches,
+      }
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -183,6 +193,9 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case REFRESH_BRANCHES_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_STASH_DETAIL_PAGE_FAIL:
       alert(action.msg)
       return state
     default:

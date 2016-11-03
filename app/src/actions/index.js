@@ -256,6 +256,9 @@ export const initSideBar = (repo) => {
       return repo.getReferences(Reference.TYPE.LISTALL)
     }).then((arrayReference) => {
       data.branches = arrayReference
+      return Helper.getStashes(repo)
+    }).then((stashes) => {
+      data.stashes = stashes
       dispatch({
         type: INIT_SIDEBAR,
         ...data,
@@ -614,3 +617,22 @@ export const refreshBranches = (projectName) => {
     })
   }
 }
+
+export const INIT_STASH_DETAIL_PAGE = 'INIT_STASH_DETAIL_PAGE'
+export const INIT_STASH_DETAIL_PAGE_FAIL = 'INIT_STASH_DETAIL_PAGE_FAIL'
+export const initStashDetailPage = (repo, stash) => {
+  return dispatch => {
+    Helper.getStashPatches(repo, stash.index).then((patches) => {
+      dispatch({
+        type: INIT_STASH_DETAIL_PAGE,
+        stashPatches: patches,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: INIT_STASH_DETAIL_PAGE_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+

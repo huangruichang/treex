@@ -130,7 +130,6 @@ export default class FileStatePage extends Component {
     this.committing = true
     let thiz = this
     this.props.onSubmitClick(commitMessage, this.props.user, () => {
-      console.log(thiz)
       thiz.committing = false
       alert('提交成功')
       thiz.showCommitForm = false
