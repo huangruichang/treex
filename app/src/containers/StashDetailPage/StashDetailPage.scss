@@ -1,17 +1,50 @@
 
-.buttonGroup {
-  margin: 5px;
-  .button {
-    display: inline-block;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    padding: 0 10px;
-    border-radius: 4px;
-    color: #666;
-    margin-right: 10px;
-    &.deletion {
-      background: #d01040;
+.stashDetailPage {
+  .buttonGroup {
+    margin: 5px;
+    .button {
+      display: inline-block;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      padding: 0 10px;
+      border-radius: 4px;
+      color: #666;
+      margin-right: 10px;
+      cursor: pointer;
+      &.deletion {
+        background: #d01040;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.stashModalPage {
+  .tip {
+    padding: 20px;
+    .text {
+      font-size: 12px;
+    }
+  }
+  .buttonGroup {
+    text-align: right;
+    font-size: 12px;
+    margin-top: 10px;
+    padding-right: 54px;
+    .button {
+      display: inline-block;
+      border: 1px solid #999;
+      padding: 2px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .cancel {
+      margin: 6px 5px;
+      background: #fff;
+    }
+    .submit {
       color: #fff;
+      background: #125fc8;
     }
   }
 }

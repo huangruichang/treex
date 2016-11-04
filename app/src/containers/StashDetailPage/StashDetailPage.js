@@ -2,7 +2,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { DiffPanel } from '../../components'
-import { initStashDetailPage } from '../../actions'
+import {
+  initStashDetailPage,
+  openModalStash,
+} from '../../actions'
 
 const styles = require('./StashDetailPage.scss')
 
@@ -16,7 +19,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
+    onApplyClick: (projectName, index) => {
+      dispatch(openModalStash(projectName, index, 'apply'))
+    },
+    onDeleteClick: (projectName, index) => {
+      dispatch(openModalStash(projectName, index, 'drop'))
+    },
   }
 }
 
@@ -59,6 +67,14 @@ export default class StashDetailPage extends Component {
     this.init()
   }
 
+  handleApplyClick() {
+    this.props.onApplyClick(this.props.params.project, this.props.params.index)
+  }
+
+  handleDeleteClick() {
+    this.props.onDeleteClick(this.props.params.project, this.props.params.index)
+  }
+
   render() {
     const { params } = this.props
     if (params.index != this.index) {
@@ -66,10 +82,10 @@ export default class StashDetailPage extends Component {
       this.init()
     }
     return (
-      <div key={`stash-detail-page-${this.props.params.index}`}>
+      <div key={`stash-detail-page-${this.props.params.index}`} className={styles.stashDetailPage}>
         <div className={styles.buttonGroup}>
-          <div className={styles.button}>应用贮藏</div>
-          <div className={`${styles.button} ${styles.deletion}`}>删除贮藏</div>
+          <div className={styles.button} onClick={::this.handleApplyClick}>应用贮藏</div>
+          <div className={`${styles.button} ${styles.deletion}`} onClick={::this.handleDeleteClick}>删除贮藏</div>
         </div>
         <DiffPanel patches={ this.props.stashPatches }/>
       </div>

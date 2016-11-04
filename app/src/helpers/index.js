@@ -1,7 +1,15 @@
 
 import { execSync } from 'child_process'
-import { Branch, Diff, Reference, Stash } from 'nodegit'
+import low from 'lowdb'
+import { Repository, Branch, Diff, Reference, Stash } from 'nodegit'
 import DiffLineHelper from './DiffLine'
+import fileAsync from 'lowdb/lib/file-async'
+
+const db = low('db.json', {
+  storage: fileAsync,
+})
+
+db.defaults({ projects: [] }).value()
 
 export const addFileToIndex = (repo, fileName) => {
   let index
@@ -279,3 +287,22 @@ export const getStashes = (repo) => {
     })
   })
 }
+
+export const dropStash = (repo, index) => {
+  return Stash.drop(repo, +index)
+}
+
+export const applyStash = (repo, index) => {
+  return Stash.apply(repo, +index)
+}
+
+export const popStash = (repo, index) => {
+  return Stash.pop(repo, +index)
+}
+
+export const openRepo = (projectName) => {
+  const result = db.get('projects').find({ name: projectName }).value()
+  const dirPath = result.path
+  return Repository.open(dirPath)
+}
+

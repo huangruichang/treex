@@ -32,6 +32,10 @@ import {
   REFRESH_BRANCHES_FAIL,
   INIT_STASH_DETAIL_PAGE,
   INIT_STASH_DETAIL_PAGE_FAIL,
+  INIT_MODAL_STASH_PAGE,
+  INIT_MODAL_STASH_PAGE_FAIL,
+  REFRESH_STASHES,
+  REFRESH_STASHES_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -156,6 +160,17 @@ export default (state = initalState, action) => {
         ...state,
         stashPatches: action.stashPatches,
       }
+    case INIT_MODAL_STASH_PAGE:
+      return {
+        ...state,
+        repo: action.repo,
+        stashes: action.stashes,
+      }
+    case REFRESH_STASHES:
+      return {
+        ...state,
+        stashes: action.stashes,
+      }
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -196,6 +211,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case INIT_STASH_DETAIL_PAGE_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_MODAL_STASH_PAGE_FAIL:
+      alert(action.msg)
+      return state
+    case REFRESH_STASHES_FAIL:
       alert(action.msg)
       return state
     default:
