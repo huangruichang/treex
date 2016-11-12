@@ -59,7 +59,16 @@ export default class SideBar extends Component {
     let origins = []
     remoteBranches.map((branch) => {
       let remoteOrigin = branch.path.split('\/')[2]
-      if (origins.length == 0) {
+      let exist = (origins, origin) => {
+        let flag = false
+        origins.map((value) => {
+          if (value.origin === origin) {
+            flag = true
+          }
+        })
+        return flag
+      }
+      if (!exist(origins, remoteOrigin)) {
         origins.push({
           origin: remoteOrigin,
           branches: [branch],
