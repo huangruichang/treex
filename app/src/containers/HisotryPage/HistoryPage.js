@@ -82,38 +82,40 @@ export default class HistoryPage extends Component {
 
   constructor(props) {
     super(props)
-    this.historiesInit = false
-    this.commitDiffFilesInit = false
+    this.mountInit = false
     this.uncommittedHisotryInit = false
-    this.uncommittedHisotryDiffFilesInit = false
     this.uncommittedHisotryHidden = false
   }
 
   componentWillMount() {
     const { repo, store } = this.props
-    if (repo && store) {
+    if (repo && store && !this.mountInit) {
       const { params } = this.props
+      this.mountInit = true
       store.dispatch(initHistoryPage(repo, params.branch))
       GLOBAL_REPO = repo
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.repo && !!nextProps.repo) {
+    if (!this.props.repo && !!nextProps.repo && !this.mountInit) {
       const { repo, store } = nextProps
       const { params } = this.props
+      this.mountInit = true
       store.dispatch(initHistoryPage(repo, params.branch))
       GLOBAL_REPO = repo
+      return
     }
 
-    if (nextProps.stagedPatches && nextProps.unstagedPatches && !this.uncommittedHisotryInit) {
-      this.uncommittedHisotryInit = true
+    if (nextProps.stagedPatches && nextProps.unstagedPatches && !this.uncommittedHisotryInit && this.mountInit) {
       let { stagedPatches, unstagedPatches } = nextProps
       if ((stagedPatches.length > 0 || unstagedPatches.length > 0)) {
         this.uncommittedHisotryHidden = false
+        this.uncommittedHisotryInit = true
       } else {
         if (!this.uncommittedHisotryInit) {
           this.uncommittedHisotryHidden = true
+          this.uncommittedHisotryInit = true
         }
       }
     }

@@ -59,7 +59,9 @@ export default class Repo extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.repo && !!nextProps.repo) {
       const { repo, store } = nextProps
-      store.dispatch(initSideBar(repo))
+      setTimeout(() => {
+        store.dispatch(initSideBar(repo))
+      }, 200)
     }
   }
 
