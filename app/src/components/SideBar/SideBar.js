@@ -98,7 +98,7 @@ export default class SideBar extends Component {
         <div className={styles.item}>
           <div className={styles.title}>
             <div className={styles.icon}>
-
+              <i className={'pc big'}></i>
             </div>
             <span className={styles.text}>WORKSPACE</span>
           </div>
@@ -115,7 +115,7 @@ export default class SideBar extends Component {
         <div className={`${styles.item} ${!this.isShowLocalBranches? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
             <div className={styles.icon}>
-              <i className={'txtIcon codeFork big'}></i>
+              <i className={'codeFork big'}></i>
             </div>
             <span className={styles.text}>分支</span>
             <span></span>
@@ -149,7 +149,7 @@ export default class SideBar extends Component {
         <div className={styles.item}>
           <div className={styles.title}>
             <div className={styles.icon}>
-              <i className={'txtIcon tag big'}></i>
+              <i className={'tag big'}></i>
             </div>
             <span className={styles.text}>标签</span>
           </div>
@@ -157,7 +157,7 @@ export default class SideBar extends Component {
         <div className={`${styles.item} ${!this.isShowRemoteBranches? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
             <div className={styles.icon}>
-              <i className={'txtIcon cloud big'}></i>
+              <i className={'cloud big'}></i>
             </div>
             <span className={styles.text}>远端</span>
             <span
@@ -186,7 +186,7 @@ export default class SideBar extends Component {
         <div className={`${styles.item} ${!this.isShowStashes? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
             <div className={styles.icon}>
-              <i className={'txtIcon bucket big'}></i>
+              <i className={'boxDot big'}></i>
             </div>
             <span className={styles.text}>已贮藏</span>
             <span

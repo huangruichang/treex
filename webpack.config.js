@@ -39,7 +39,7 @@ module.exports = {
     loaders: [
       { test: /\.json$/, include: appDir, loader: 'json' },
       { test: /\.js$/, include: appDir, loader: 'babel' },
-      { test: /\.scss$/, include: appDir, loaders: ["style", "css?modules", "sass?sourceMap"] },
+      { test: /\.scss$/, include: appDir, loaders: ["style", "css?modules&sourceMap", "sass?sourceMap"] },
       { test: /.node$/, include: appDir, loader: 'node' },
       { test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, loader: 'url-loader?limit=100000&name=[path][name].[ext]'}
     ]

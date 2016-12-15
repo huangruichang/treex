@@ -23,7 +23,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
-  display: inline-block;
 }
 
 .txIcon.big:before {
@@ -32,7 +31,12 @@ body {
 
 .codeFork:before {
   @extend .txIcon;
-  content: '\e617';
+  content: "\e6a8";
+}
+
+.branch:before {
+  @extend .txIcon;
+  content: '\e6a8';
 }
 
 .bucket:before {
@@ -42,12 +46,12 @@ body {
 
 .search:before {
   @extend .txIcon;
-  content: '\e672';
+  content: '\e611';
 }
 
 .setting:before {
   @extend .txIcon;
-  content: '\e655';
+  content: '\e79f';
 }
 
 .iconCodeFork:before {
@@ -57,10 +61,50 @@ body {
 
 .tag:before {
   @extend .txIcon;
-  content: '\e6f5';
+  content: '\e69c';
 }
 
 .cloud:before {
   @extend .txIcon;
-  content: '\e62e'
+  content: '\e635'
+}
+
+.terminal:before {
+  @extend .txIcon;
+  content: '\e874';
+}
+
+.boxDot:before {
+  @extend .txIcon;
+  content: '\e638'
+}
+
+.pc:before {
+  @extend .txIcon;
+  content: '\e697';
+}
+
+.treeFrame:before {
+  @extend .txIcon;
+  content: '\e635';
+}
+
+.merge:before {
+  @extend .txIcon;
+  content: '\e73a';
+}
+
+.push:before {
+  @extend .txIcon;
+  content: '\e672';
+}
+
+.pull:before {
+  @extend .txIcon;
+  content: '\e673';
+}
+
+.add:before {
+  @extend .txIcon;
+  content: '\e660';
 }

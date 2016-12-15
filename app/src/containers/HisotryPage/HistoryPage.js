@@ -184,7 +184,7 @@ export default class HistoryPage extends Component {
       lowerBox = unstagedFileList
     }
     return (
-      <div>
+      <div style={{ height: 520 }}>
         <HistoryList
           histories={this.props.histories}
           onItemClick={::this.showCommittedHistory}

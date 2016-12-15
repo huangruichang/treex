@@ -151,7 +151,7 @@ export default class FileStatePage extends Component {
         commitDiffFiles={this.props.unstagedPatches || []}
         onItemClick={this.props.onCommitDiffFileClick}
         style={{
-          height: 250,
+          height: 230,
         }}
         mode={'unstaged'}
         onStageClick={this.props.onStageClick}
@@ -161,7 +161,7 @@ export default class FileStatePage extends Component {
         commitDiffFiles={this.props.stagedPatches || []}
         onItemClick={this.props.onCommitDiffFileClick}
         style={{
-          height: 250,
+          height: 230,
         }}
         mode={'staged'}
         onUnStageClick={this.props.onUnStageClick}

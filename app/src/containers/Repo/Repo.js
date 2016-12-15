@@ -118,12 +118,63 @@ export default class Repo extends Component {
       />
     :''
     return (
-      <div className={styles.repo}>s
-        <div className={styles.panelLeft}>
-          {($sidebar)}
+      <div className={styles.repo}>
+        <div className={styles.topMenu}>
+          <div className={styles.group} style={{
+            margin: '0 60px 0 10px',
+          }}>
+            <div className={styles.button}>
+              <i className={'add big'}></i>
+              <div>提交</div>
+            </div>
+          </div>
+          <div className={styles.group}>
+            <div className={styles.button}>
+              <i className={'pull big'}></i>
+              <div>拉取</div>
+            </div>
+            <div className={styles.button}>
+              <i className={'push big'}></i>
+              <div>推送</div>
+            </div>
+          </div>
+          <div className={styles.group}>
+            <div className={styles.button}>
+              <i className={'branch big'}></i>
+              <div>分支</div>
+            </div>
+            <div className={styles.button}>
+              <i className={'merge big'}></i>
+              <div>合并</div>
+            </div>
+          </div>
+          <div className={styles.group}>
+            <div className={styles.button}>
+              <i className={'boxDot big'}></i>
+              <div>暂存</div>
+            </div>
+          </div>
+          <div className={styles.group} style={{
+            float: 'right',
+            marginRight: 10,
+          }}>
+            <div className={styles.button}>
+              <i className={'terminal big'}></i>
+              <div>终端</div>
+            </div>
+            <div className={styles.button}>
+              <i className={'setting big'}></i>
+              <div>设置</div>
+            </div>
+          </div>
         </div>
-        <div className={styles.panelRight}>
-          {(Page)}
+        <div className={styles.main}>
+          <div className={styles.panelLeft}>
+            {($sidebar)}
+          </div>
+          <div className={styles.panelRight}>
+            {(Page)}
+          </div>
         </div>
       </div>
     )

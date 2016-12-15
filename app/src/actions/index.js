@@ -140,7 +140,7 @@ export const loadRepo = (projectName) => {
 export const openRepo = (projectName) => {
   let win = new BrowserWindow({
     width: 1048,
-    height: 543,
+    height: 604,
   })
   win.on('closed', () => {
     win = null

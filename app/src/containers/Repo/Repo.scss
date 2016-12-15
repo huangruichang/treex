@@ -1,22 +1,44 @@
 
-.panelRight {
-  margin-left: 140px;
-  margin-top: -18px;
-}
+.main {
+  position: relative;
+  .panelRight {
+    margin-left: 140px;
+  }
 
-.panelLeft {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 140px;
-  background: #e8e9e8;
-  height: 100%;
-  border-right: 1px solid #ddd;
-  overflow: auto;
+  .panelLeft {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 140px;
+    background: #e8e9e8;
+    height: 100%;
+    border-right: 1px solid #ddd;
+    overflow: auto;
+  }
 }
 
 .repo {
   font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  .topMenu {
+    height: 60px;
+    width: 100%;
+    background: #e8e9e8;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    .group {
+      display: inline-block;
+      .button {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        font-size: 12px;
+        box-sizing: border-box;
+        padding-top: 4px;
+      }
+    }
+  }
   .commitFileList {
     margin-top: 10px;
   }
