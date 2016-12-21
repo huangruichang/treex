@@ -85,6 +85,14 @@ export default class FileStatePage extends Component {
       GLOBAL_REPO = repo
     }
     store.dispatch(loadUser())
+
+  }
+
+  componentDidMount() {
+    const { params } = this.props
+    if (params && params.action === 'commit') {
+      this.onCommitInputFocus()
+    }
   }
 
   componentWillReceiveProps(nextProps) {

@@ -1,6 +1,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { hashHistory } from 'react-router'
 import { SideBar } from '../../components'
 import { loadRepo, initSideBar } from '../../actions'
 import HisotryPage from '../HisotryPage/HistoryPage'
@@ -102,6 +103,11 @@ export default class Repo extends Component {
     return remoteBranches
   }
 
+  onCommitClick() {
+    console.log(`/repo/${this.props.projectName}/fileState/commit`)
+    hashHistory.push(`/repo/${this.props.projectName}/fileState/commit`)
+  }
+
   render() {
     let Page = this.props.page || <HisotryPage {...this.props}/>
     let $sidebar = this.props.repo?
@@ -123,7 +129,7 @@ export default class Repo extends Component {
           <div className={styles.group} style={{
             margin: '0 60px 0 10px',
           }}>
-            <div className={styles.button}>
+            <div className={styles.button} onClick={::this.onCommitClick}>
               <i className={'add big'}></i>
               <div>提交</div>
             </div>

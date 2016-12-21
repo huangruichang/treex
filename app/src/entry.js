@@ -36,7 +36,8 @@ const component = (
     }}/>
     <Route path="/repo/:project" component={Repo}>
       <Route path="history" components={{ page: HistoryPage }}/>
-      <Route path="fileState" components={{ page: FileStatePage }}/>
+      <Route path="fileState(/:action)" components={{ page: FileStatePage }}/>
+
       <Route path="branches/:branch" components={{ page: BranchHistoryPage }}/>
       <Route path="stashes/:index" components={{ page: StashDetailPage }}/>
     </Route>
