@@ -43,6 +43,7 @@ const component = (
     </Route>
     <Route path="/checkout/remote/:project/:branch" component={CheckoutRemotePage}/>
     <Route path="/stash/:action/:project/:index" component={StashModalPage}/>
+    <Route path="/pull/:project"/>
   </Router>
 )
 
