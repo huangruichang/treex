@@ -6,6 +6,7 @@ import {
   closeFocuseWindow,
   checkoutRemoteBranch,
 } from '../../actions'
+import utils from '../../helpers/utils'
 
 require('!style!css!sass!../common.scss')
 const styles = require('./CheckoutRemotePage.scss')
@@ -54,18 +55,7 @@ export default class CheckoutRemotePage extends Component {
   }
 
   getRemoteBranches(branches) {
-    let remoteBranches = branches.filter((branch) => {
-      return branch.name().indexOf('refs/remotes') != -1
-    })
-    remoteBranches = remoteBranches.map((branch) => {
-      return {
-        name: branch.name().replace(/refs\/remotes\//g, ''),
-        path: branch.name(),
-        isHead: branch.isHead(),
-        fullName: branch.name(),
-      }
-    })
-    return remoteBranches
+    return utils.getRemoteBranches(branches)
   }
 
   getSelectDefaultValue(branches = [], branch) {

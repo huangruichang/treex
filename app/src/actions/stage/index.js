@@ -68,7 +68,7 @@ const stageOneHunk = (repo, patch, isStaged) => {
   })
 }
 
-const stageOnePatch = (repo, patch, isStaged) => {
+export const stageOnePatch = (repo, patch, isStaged) => {
   const filePath = patch.newFile().path()
   let index
   return stageOneHunk(repo, patch, isStaged).then(() => {

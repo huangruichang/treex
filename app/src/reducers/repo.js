@@ -36,6 +36,10 @@ import {
   INIT_MODAL_STASH_PAGE_FAIL,
   REFRESH_STASHES,
   REFRESH_STASHES_FAIL,
+  INIT_PULL_PAGE,
+  INIT_PULL_PAGE_FAIL,
+  PULL,
+  PULL_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -51,6 +55,8 @@ const initalState = {
   branches: [],
   stashes: [],
   stashPatches: [],
+  currentBranch: undefined,
+  currentOrigin: undefined,
 }
 
 export default (state = initalState, action) => {
@@ -171,6 +177,17 @@ export default (state = initalState, action) => {
         ...state,
         stashes: action.stashes,
       }
+    case INIT_PULL_PAGE:
+      return {
+        ...state,
+        repo: action.repo,
+        branches: action.branches,
+        currentBranch: action.currentBranch,
+        currentOrigin: action.currentOrigin,
+      }
+    case PULL:
+      alert('拉取成功!')
+      return state
     case LOAD_REPO_FAIL:
       alert(action.msg)
       return state
@@ -217,6 +234,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case REFRESH_STASHES_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_PULL_PAGE_FAIL:
+      alert(action.msg)
+      return state
+    case PULL_FAIL:
       alert(action.msg)
       return state
     default:

@@ -1,6 +1,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
+import utils from '../../helpers/utils'
 
 const styles = require('./sidebar.scss')
 
@@ -56,33 +57,7 @@ export default class SideBar extends Component {
   }
 
   handleRemoteBranches(remoteBranches) {
-    let origins = []
-    remoteBranches.map((branch) => {
-      let remoteOrigin = branch.path.split('\/')[2]
-      let exist = (origins, origin) => {
-        let flag = false
-        origins.map((value) => {
-          if (value.origin === origin) {
-            flag = true
-          }
-        })
-        return flag
-      }
-      if (!exist(origins, remoteOrigin)) {
-        origins.push({
-          origin: remoteOrigin,
-          branches: [branch],
-        })
-      } else {
-        origins.map((origin) => {
-          let remoteOrigin = branch.path.split('\/')[2]
-          if (remoteOrigin === origin.origin) {
-            origin.branches.push(branch)
-          }
-        })
-      }
-    })
-    return origins
+    return utils.getOrigins(remoteBranches)
   }
 
   onCheckoutBranchClick(branch) {

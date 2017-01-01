@@ -1,7 +1,7 @@
 
 import { execSync } from 'child_process'
 import low from 'lowdb'
-import { Repository, Branch, Diff, Reference, Stash } from 'nodegit'
+import { Repository, Branch, Diff, Reference, Stash, Cred, Revwalk } from 'nodegit'
 import DiffLineHelper from './DiffLine'
 import fileAsync from 'lowdb/lib/file-async'
 
@@ -220,7 +220,8 @@ export const getCommitInfo = (repo, commitId) => {
 
 export const getHistories = (commit, historiesLimit) => {
   return new Promise((resolve, reject) => {
-    const eventEmitter = commit.history()
+    //@todo make sorting extensible
+    const eventEmitter = commit.history(Revwalk.SORT.TIME)
     const histories = []
     let flag = false
     eventEmitter.on('commit', (commit) => {
@@ -306,3 +307,17 @@ export const openRepo = (projectName) => {
   return Repository.open(dirPath)
 }
 
+export const pull = (repo, origin, branch) => {
+  return repo.fetch(origin, {
+    callbacks: {
+      credentials: (url, userName) => {
+        return Cred.sshKeyFromAgent(userName)
+      },
+      certificateCheck: () => {
+        return 1
+      },
+    },
+  }).then(() => {
+    return repo.mergeBranches(branch, `${origin}/${branch}`)
+  })
+}

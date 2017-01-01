@@ -5,7 +5,11 @@ import { hashHistory } from 'react-router'
 import { SideBar } from '../../components'
 import { loadRepo, initSideBar } from '../../actions'
 import HisotryPage from '../HisotryPage/HistoryPage'
-import { checkoutBranch, openCheckoutRemoteBranch } from '../../actions'
+import {
+  checkoutBranch,
+  openCheckoutRemoteBranch,
+  openPullPage,
+} from '../../actions'
 
 require('!style!css!sass!../common.scss')
 const styles = require('./Repo.scss')
@@ -28,6 +32,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onCheckoutRemoteBranchClick: (projectName, branchName) => {
       dispatch(openCheckoutRemoteBranch(projectName, branchName))
+    },
+    onPullPageClick: (projectName) => {
+      dispatch(openPullPage(projectName))
     },
   }
 }
@@ -108,6 +115,10 @@ export default class Repo extends Component {
     hashHistory.push(`/repo/${this.props.projectName}/fileState/commit`)
   }
 
+  onPullPageClick() {
+    this.props.onPullPageClick(this.props.projectName)
+  }
+
   render() {
     let Page = this.props.page || <HisotryPage {...this.props}/>
     let $sidebar = this.props.repo?
@@ -135,7 +146,7 @@ export default class Repo extends Component {
             </div>
           </div>
           <div className={styles.group}>
-            <div className={styles.button}>
+            <div className={styles.button} onClick={::this.onPullPageClick}>
               <i className={'pull big'}></i>
               <div>拉取</div>
             </div>
