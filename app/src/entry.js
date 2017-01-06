@@ -15,6 +15,7 @@ import {
   StashDetailPage,
   StashModalPage,
   PullPage,
+  PushPage,
 } from './containers'
 import { listProject, refreshSideBar } from './actions'
 
@@ -45,6 +46,7 @@ const component = (
     <Route path="/checkout/remote/:project/:branch" component={CheckoutRemotePage}/>
     <Route path="/stash/:action/:project/:index" component={StashModalPage}/>
     <Route path="/pull/:project" component={PullPage}/>
+    <Route path="/push/:project" component={PushPage}/>
   </Router>
 )
 

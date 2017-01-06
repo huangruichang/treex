@@ -48,23 +48,11 @@ export default class PullPage extends Component {
   }
 
   getSelectedDefaultBranch(branches = [], branch = 'master') {
-    let result = {}
-    for (let obj of branches) {
-      if (obj.fullName.indexOf(branch) != -1) {
-        result = obj
-      }
-    }
-    return result
+    return utils.getSelectedDefaultBranch(branches, branch)
   }
 
   getSelectedDefaultOrigin(origins = [], origin = 'origin') {
-    let result = {}
-    for (let obj of origins) {
-      if (origin.indexOf(obj.origin) != -1) {
-        result = obj
-      }
-    }
-    return result
+    return utils.getSelectedDefaultOrigin(origins, origin)
   }
 
   onSubmitClick() {

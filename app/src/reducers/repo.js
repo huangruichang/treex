@@ -40,6 +40,10 @@ import {
   INIT_PULL_PAGE_FAIL,
   PULL,
   PULL_FAIL,
+  INIT_PUSH_PAGE,
+  INIT_PUSH_PAGE_FAIL,
+  PUSH,
+  PUSH_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -57,6 +61,7 @@ const initalState = {
   stashPatches: [],
   currentBranch: undefined,
   currentOrigin: undefined,
+  remotes: [],
 }
 
 export default (state = initalState, action) => {
@@ -185,8 +190,19 @@ export default (state = initalState, action) => {
         currentBranch: action.currentBranch,
         currentOrigin: action.currentOrigin,
       }
+    case INIT_PUSH_PAGE:
+      return {
+        ...state,
+        repo: action.repo,
+        branches: action.branches,
+        currentBranch: action.currentBranch,
+        remotes: action.remotes,
+      }
     case PULL:
       alert('拉取成功!')
+      return state
+    case PUSH:
+      alert('推送成功!')
       return state
     case LOAD_REPO_FAIL:
       alert(action.msg)
@@ -240,6 +256,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case PULL_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_PUSH_PAGE_FAIL:
+      alert(action.msg)
+      return state
+    case PUSH_FAIL:
       alert(action.msg)
       return state
     default:

@@ -321,3 +321,22 @@ export const pull = (repo, origin, branch) => {
     return repo.mergeBranches(branch, `${origin}/${branch}`)
   })
 }
+
+export const push = (repo, origin, branches) => {
+  return repo.getRemote(origin).then((remote) => {
+    let refs = []
+    branches.map((branch) => {
+      refs.push(`${branch.path}:${branch.path}`)
+    })
+    return remote.push(
+      refs,
+      {
+        callbacks: {
+          credentials: function (url, userName) {
+            return Cred.sshKeyFromAgent(userName)
+          },
+        },
+      },
+    )
+  })
+}

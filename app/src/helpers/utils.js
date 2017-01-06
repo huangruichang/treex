@@ -2,7 +2,6 @@
 const exports = {
   getLocalBranches(branches = []) {
     let localBranches = branches.filter((branch) => {
-      console.log(branch.name())
       return branch.name().indexOf('refs/heads') != -1
     })
     localBranches = localBranches.map((branch) => {
@@ -60,6 +59,27 @@ const exports = {
     })
     return origins
   },
+
+  getSelectedDefaultBranch(branches = [], branch = 'master') {
+    let result = {}
+    for (let obj of branches) {
+      if (obj.fullName.indexOf(branch) != -1) {
+        result = obj
+      }
+    }
+    return result
+  },
+
+  getSelectedDefaultOrigin(origins = [], origin = 'origin') {
+    let result = {}
+    for (let obj of origins) {
+      if (origin.indexOf(obj.origin) != -1) {
+        result = obj
+      }
+    }
+    return result
+  },
+  
 }
 
 export default exports

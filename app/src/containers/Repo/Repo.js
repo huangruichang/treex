@@ -9,6 +9,7 @@ import {
   checkoutBranch,
   openCheckoutRemoteBranch,
   openPullPage,
+  openPushPage,
 } from '../../actions'
 
 require('!style!css!sass!../common.scss')
@@ -35,6 +36,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onPullPageClick: (projectName) => {
       dispatch(openPullPage(projectName))
+    },
+    onPushPageClick: (projectName) => {
+      dispatch(openPushPage(projectName))
     },
   }
 }
@@ -111,12 +115,15 @@ export default class Repo extends Component {
   }
 
   onCommitClick() {
-    console.log(`/repo/${this.props.projectName}/fileState/commit`)
     hashHistory.push(`/repo/${this.props.projectName}/fileState/commit`)
   }
 
   onPullPageClick() {
     this.props.onPullPageClick(this.props.projectName)
+  }
+
+  onPushPageClick() {
+    this.props.onPushPageClick(this.props.projectName)
   }
 
   render() {
@@ -150,7 +157,7 @@ export default class Repo extends Component {
               <i className={'pull big'}></i>
               <div>拉取</div>
             </div>
-            <div className={styles.button}>
+            <div className={styles.button} onClick={::this.onPushPageClick}>
               <i className={'push big'}></i>
               <div>推送</div>
             </div>

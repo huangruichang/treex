@@ -1,0 +1,70 @@
+
+@import "../CheckoutRemotePage/CheckoutRemotePage";
+
+.form {
+  .formGroupInline {
+    @extend .formGroup;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: space-around;
+    .input {
+      width: initial;
+      margin: 0;
+    }
+    .select {
+      margin-right: 2%;
+      flex-grow:1;
+    }
+    .originText {
+      font-size: 12px;
+      flex-grow:1;
+    }
+    .grayInput {
+      @extend .input;
+      color: #999;
+      flex-grow:15;
+    }
+  }
+  .branchListTitle {
+    margin: 10px 0;
+    font-size: 12px;
+  }
+  .branchList {
+    .header {
+      display: flex;
+      font-size: 12px;
+      .item {
+        flex-grow:1;
+        width: 33.3%;
+      }
+    }
+    background: #d6d7d7;
+    padding: 2px 4px;
+    border-radius: 2px;
+    .tableWrapper {
+      height: 100px;
+      overflow: auto;
+      background: #fff;
+      .table {
+        border-collapse: collapse;
+        font-size: 12px;
+        width: 100%;
+        tr {
+          &:not(:last-child) {
+            border-bottom: 1px solid #ddd;
+          }
+          td {
+            input {
+              margin: 0;
+            }
+            width: 33.3%;
+          }
+        }
+      }
+    }
+  }
+  .buttonGroup {
+    padding-right: 0;
+  }
+}
