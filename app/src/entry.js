@@ -16,6 +16,7 @@ import {
   StashModalPage,
   PullPage,
   PushPage,
+  ClonePage,
 } from './containers'
 import { listProject, refreshSideBar } from './actions'
 
@@ -47,6 +48,7 @@ const component = (
     <Route path="/stash/:action/:project/:index" component={StashModalPage}/>
     <Route path="/pull/:project" component={PullPage}/>
     <Route path="/push/:project" component={PushPage}/>
+    <Route path="/clone" component={ClonePage}/>
   </Router>
 )
 

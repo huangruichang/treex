@@ -44,6 +44,10 @@ import {
   INIT_PUSH_PAGE_FAIL,
   PUSH,
   PUSH_FAIL,
+  FIND_CLONE_PATH,
+  CLONE,
+  CLONE_SUCCESS,
+  CLONE_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -62,6 +66,9 @@ const initalState = {
   currentBranch: undefined,
   currentOrigin: undefined,
   remotes: [],
+  cloneFilePath: undefined,
+  cloneProjectName: undefined,
+  progress: 0,
 }
 
 export default (state = initalState, action) => {
@@ -198,6 +205,23 @@ export default (state = initalState, action) => {
         currentBranch: action.currentBranch,
         remotes: action.remotes,
       }
+    case FIND_CLONE_PATH:
+      return {
+        ...state,
+        cloneFilePath: action.cloneFilePath,
+        cloneProjectName: action.cloneProjectName,
+      }
+    case CLONE:
+      return {
+        ...state,
+        progress: action.progress,
+      }
+    case CLONE_SUCCESS:
+      alert('克隆完成!')
+      return {
+        ...state,
+        progress: 100,
+      }
     case PULL:
       alert('拉取成功!')
       return state
@@ -262,6 +286,9 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case PUSH_FAIL:
+      alert(action.msg)
+      return state
+    case CLONE_FAIL:
       alert(action.msg)
       return state
     default:

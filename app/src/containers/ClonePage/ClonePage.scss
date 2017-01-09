@@ -1,0 +1,25 @@
+
+@import "../CheckoutRemotePage/CheckoutRemotePage";
+
+.form {
+  .formGroup {
+    .label {
+      width: 170px;
+    }
+    .moreButton {
+      display: inline-block;
+      border: 1px solid #ddd;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      position: absolute;
+      right: 70px;
+      top: 53px;
+      background: #ddd;
+      border-radius: 2px;
+      color: #999;
+      cursor: pointer;
+    }
+  }
+}

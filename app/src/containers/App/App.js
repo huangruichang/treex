@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { findProject, openRepo } from '../../actions'
+import { findProject, openRepo, openClonePage } from '../../actions'
 import ProjectList from '../../components/ProjectList/ProjectList'
 
 require('!style!css!sass!../common.scss')
@@ -13,7 +13,8 @@ const mapStateToProps = (state) => {
   }
 }
 @connect(
-  mapStateToProps
+  mapStateToProps,
+
 )
 export default class App extends Component {
 
@@ -28,6 +29,13 @@ export default class App extends Component {
     }
   }
 
+  cloneProject() {
+    const { store } = this.props
+    if (store) {
+      store.dispatch(openClonePage())
+    }
+  }
+
   onItemClick(name) {
     openRepo(name)
   }
@@ -36,7 +44,8 @@ export default class App extends Component {
     return (
       <div className={styles.app}>
         <div className={styles.top}>
-          <div className={styles.addProjectButton} onClick={::this.findProject}>+新仓库</div>
+          <div className={styles.addProjectButton} style={{ marginRight: 5 }} onClick={::this.findProject}>+新仓库</div>
+          <div className={styles.addProjectButton} onClick={::this.cloneProject}>+克隆仓库</div>
         </div>
         <ProjectList onItemClick={this.onItemClick} projects={this.props.projects}/>
       </div>

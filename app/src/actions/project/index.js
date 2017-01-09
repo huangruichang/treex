@@ -59,6 +59,27 @@ export const findProject = () => {
   }
 }
 
+export const FIND_CLONE_PATH = 'FIND_CLONE_PATH'
+export const findClonePath = () => {
+  return dispatch => {
+    const dialog = remote.dialog
+    dialog.showOpenDialog({
+      properties: ['openDirectory'],
+    }, (filenames) => {
+      if (!filenames) return
+      if (filenames.length > 0) {
+        const filePath = filenames[0]
+        const projectName = filePath.split('\/').reverse()[0]
+        dispatch({
+          type: FIND_CLONE_PATH,
+          cloneFilePath: filePath,
+          cloneProjectName: projectName,
+        })
+      }
+    })
+  }
+}
+
 export const listProject = () => {
   const projects = db.get('projects').value()
   const newProjects = []
@@ -74,3 +95,4 @@ export const listProject = () => {
     })
   }
 }
+
