@@ -69,6 +69,7 @@ const initalState = {
   cloneFilePath: undefined,
   cloneProjectName: undefined,
   progress: 0,
+  tags: [],
 }
 
 export default (state = initalState, action) => {
@@ -102,6 +103,7 @@ export default (state = initalState, action) => {
         fileModifiedCount: action.fileModifiedCount,
         branches: action.branches,
         stashes: action.stashes,
+        tags: action.tags,
       }
     case LOAD_COMMIT_DIFF_FILES:
       return {

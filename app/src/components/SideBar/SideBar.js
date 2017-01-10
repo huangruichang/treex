@@ -17,6 +17,7 @@ export default class SideBar extends Component {
     repo: PropTypes.object.isRequired,
     projectName: PropTypes.string.isRequired,
     stashes: PropTypes.array.isRequired,
+    tags: PropTypes.array.isRequired,
   }
 
   constructor(props) {
@@ -24,6 +25,7 @@ export default class SideBar extends Component {
     this.isShowLocalBranches = false
     this.isShowRemoteBranches = false
     this.isShowStashes = false
+    this.isShowTags = false
   }
 
   showLocalBranches() {
@@ -53,6 +55,16 @@ export default class SideBar extends Component {
 
   hideStashes() {
     this.isShowStashes = false
+    this.forceUpdate()
+  }
+
+  showTags() {
+    this.isShowTags = true
+    this.forceUpdate()
+  }
+
+  hideTags() {
+    this.isShowTags = false
     this.forceUpdate()
   }
 
@@ -121,13 +133,34 @@ export default class SideBar extends Component {
             })
           }
         </div>
-        <div className={styles.item}>
+        <div className={`${styles.item} ${!this.isShowTags? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
             <div className={styles.icon}>
               <i className={'tag big'}></i>
             </div>
             <span className={styles.text}>标签</span>
+            <span className={this.isShowTags? styles.hoverShow : styles.hidden}
+              onClick={::this.hideTags}
+            >隐藏</span>
+            <span className={!this.isShowTags? styles.hoverShow : styles.hidden}
+              onClick={::this.showTags}
+            >显示</span>
           </div>
+          {
+            this.props.tags.map((obj, index) => {
+              return <Link key={`sidebar-tag-${index}`}
+                           className={styles.subTitle}
+                           activeClassName={styles.active}
+                           to={`/repo/${this.props.params.project}/tags/${obj}`}>
+                <span className={`ellipsis ${styles.branchName}`}
+                      title={obj}
+                      style={{
+                        maxWidth: 100,
+                      }}
+                >{obj}</span>
+              </Link>
+            })
+          }
         </div>
         <div className={`${styles.item} ${!this.isShowRemoteBranches? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>

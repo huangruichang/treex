@@ -72,10 +72,15 @@ export const initSideBar = (repo) => {
       data.fileModifiedCount = arrayConvenientPatch.length
       return repo.getReferences(Reference.TYPE.LISTALL)
     }).then((arrayReference) => {
-      data.branches = arrayReference
+      data.branches = arrayReference.filter((reference) => {
+        return reference.isBranch() === 1
+      })
       return Helper.getStashes(repo)
     }).then((stashes) => {
       data.stashes = stashes
+      return Helper.listTags(repo)
+    }).then((tags) => {
+      data.tags = tags
       dispatch({
         type: INIT_SIDEBAR,
         ...data,
