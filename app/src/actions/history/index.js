@@ -7,13 +7,16 @@ export const LOAD_HISTORIES = 'LOAD_HISTORIES'
 export const LOAD_HISTORIES_FAIL = 'LOAD_HISTORIES_FAIL'
 
 export const APPEND_HISTORIES = 'APPEND_HISTORIES'
-export const appendHistories = ({ repo, historiesLimit, branch }) => {
+export const appendHistories = ({ repo, historiesLimit, branch, tag }) => {
   return (dispatch) => {
     Promise.resolve().then(() => {
       if (branch) {
+        branch = ~branch.indexOf('refs/heads/') !== -1? branch : `refs/heads/${branch}`
         return repo.getBranch(branch).then((reference) => {
           return repo.getReferenceCommit(reference)
         })
+      } else if (tag) {
+        return Helper.getReferenceCommit(repo, tag)
       }
       return repo.getHeadCommit()
     }).then((commit) => {
@@ -159,4 +162,25 @@ export const loadDiffLines = (convenientPatch) => {
   }
 }
 
+export const LOAD_ALL_COMMITS = 'LOAD_ALL_COMMITS'
+export const LOAD_ALL_COMMITS_FAIL = 'LOAD_ALL_COMMITS_FAIL'
+export const loadAllCommits = (repo) => {
+  return dispatch => {
+    Helper.getCurrentBranch(repo).then((branch) => {
+      return Helper.getBranchHeadCommit(repo, branch.toString())
+    }).then((commit) => {
+      return Helper.getHistories(commit, 9999999)
+    }).then((histories) => {
+      dispatch({
+        type: LOAD_ALL_COMMITS,
+        histories: histories,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_ALL_COMMITS_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
 

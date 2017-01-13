@@ -15,6 +15,8 @@ import {
 } from '../../actions'
 import { HistoryList, CommitFileList, CommitInfo, DiffPanel } from '../../components'
 
+const styles = require('./HistoryPage.scss')
+
 let GLOBAL_REPO
 let HISTORIES_COUNT = 50
 
@@ -183,8 +185,9 @@ export default class HistoryPage extends Component {
       uppperBox = stagedFileList
       lowerBox = unstagedFileList
     }
+
     return (
-      <div style={{ height: 520 }}>
+      <div className={styles.historyPage}>
         <HistoryList
           histories={this.props.histories}
           onItemClick={::this.showCommittedHistory}
@@ -193,22 +196,13 @@ export default class HistoryPage extends Component {
           onUnCommittedHistory={::this.showUncommittedHistory}
           prefix={`history-page-${this.props.params.project}-${this.props.params.branch}`}
         />
-        <div style={{
-          display: 'flex',
-        }}>
-          <div style={{ width: '50%' }}>
+        <div className={styles.detail}>
+          <div className={styles.left}>
             {uppperBox}
             {lowerBox}
           </div>
-          <div style={{
-            width: '49%',
-            paddingLeft: '1%',
-            height: 300,
-            overflow: 'auto',
-            marginTop: 20,
-            fontSize: 12,
-          }}>
-          <DiffPanel patches={this.props.diffPatches}/>
+          <div className={styles.right}>
+            <DiffPanel patches={this.props.diffPatches}/>
           </div>
         </div>
       </div>

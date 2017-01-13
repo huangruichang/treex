@@ -48,6 +48,10 @@ import {
   CLONE,
   CLONE_SUCCESS,
   CLONE_FAIL,
+  INIT_TAG_HISTORY_PAGE,
+  INIT_TAG_HISTORY_PAGE_FAIL,
+  LOAD_ALL_COMMITS,
+  LOAD_ALL_COMMITS_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -70,6 +74,7 @@ const initalState = {
   cloneProjectName: undefined,
   progress: 0,
   tags: [],
+  tagCommit: undefined,
 }
 
 export default (state = initalState, action) => {
@@ -224,6 +229,20 @@ export default (state = initalState, action) => {
         ...state,
         progress: 100,
       }
+    case INIT_TAG_HISTORY_PAGE:
+      return {
+        ...state,
+        histories: action.histories,
+        commitDiffFiles: action.commitDiffFiles,
+        diffPatches: action.diffPatches,
+        commitInfo: action.commitInfo,
+        tagCommit: action.tagCommit,
+      }
+    case LOAD_ALL_COMMITS:
+      return {
+        ...state,
+        histories: action.histories,
+      }
     case PULL:
       alert('拉取成功!')
       return state
@@ -291,6 +310,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case CLONE_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_TAG_HISTORY_PAGE_FAIL:
+      alert(action.msg)
+      return state
+    case LOAD_ALL_COMMITS_FAIL:
       alert(action.msg)
       return state
     default:

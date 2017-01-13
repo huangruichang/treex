@@ -19,6 +19,17 @@
       padding-left: 5%;
     }
   }
+  .loadAll {
+    font-size: 12px;
+    width: 100%;
+    text-align: center;
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+    color: #125fc8;
+    cursor: pointer;
+  }
 }
 
 .historyItem {
@@ -35,6 +46,14 @@
   }
   .commitId {
     max-width: 100px;
+  }
+  .tag {
+    display: inline-block;
+    background: #f3eac3;
+    padding: 2px 4px;
+    border-radius: 2px;
+    margin-right: 4px;
+    color: #000 !important;
   }
 }
 

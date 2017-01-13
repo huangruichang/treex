@@ -1,7 +1,16 @@
 
 import { execSync } from 'child_process'
 import low from 'lowdb'
-import { Repository, Branch, Diff, Reference, Stash, Cred, Revwalk, Tag } from 'nodegit'
+import {
+  Repository,
+  Branch,
+  Diff,
+  Reference,
+  Stash,
+  Cred,
+  Revwalk,
+  Tag,
+} from 'nodegit'
 import DiffLineHelper from './DiffLine'
 import fileAsync from 'lowdb/lib/file-async'
 
@@ -166,8 +175,8 @@ export const getDiffLines = (patch) => {
 
 export const getBranchHeadCommit = (repo, branch) => {
   if (branch) {
+    branch = ~branch.indexOf('refs/heads') ? branch : 'refs/heads/' + branch
     return repo.getBranch(branch).then((reference) => {
-      branch = ~branch.indexOf('refs/heads') ? branch : 'refs/heads' + branch
       return repo.getReferenceCommit(reference)
     })
   }
@@ -344,4 +353,20 @@ export const push = (repo, origin, branches) => {
 
 export const listTags = (repo) => {
   return Tag.list(repo)
+}
+
+export const getReference = (repo, name) => {
+  return repo.getReference(name)
+}
+
+export const getReferenceCommit = (repo, name) => {
+  return getReference(repo, name).then((reference) => {
+    return reference.peel(1)
+  }).then((commitObj) => {
+    return repo.getCommit(commitObj.id())
+  })
+}
+
+export const getCurrentBranch = (repo) => {
+  return repo.getCurrentBranch()
 }

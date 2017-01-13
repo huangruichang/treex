@@ -1,0 +1,20 @@
+
+.historyPage {
+  height: 520px;
+  .detail {
+    display: flex;
+    .left {
+      width: 50%;
+    }
+    .right {
+      width: 49%;
+      padding-left: 1%;
+      height: 300px;
+      overflow: auto;
+      margin-top: 20px;
+      font-size: 12px;
+    }
+  }
+}
+
+
