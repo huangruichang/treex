@@ -4,7 +4,8 @@
   "description": "",
   "main": "app/main.js",
   "scripts": {
-    "dev": "webpack -w --progress --config webpack.config.js"
+    "dev": "webpack -w --progress --config webpack.config.js",
+    "open:dist": "cd ./app/dist && electron index.js"
   },
   "devDependencies": {
     "babel-core": "^6.5.2",
