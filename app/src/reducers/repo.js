@@ -36,6 +36,8 @@ import {
   INIT_MODAL_STASH_PAGE_FAIL,
   REFRESH_STASHES,
   REFRESH_STASHES_FAIL,
+  SAVE_STASH,
+  SAVE_STASH_FAIL,
   INIT_PULL_PAGE,
   INIT_PULL_PAGE_FAIL,
   PULL,
@@ -243,6 +245,9 @@ export default (state = initalState, action) => {
         ...state,
         histories: action.histories,
       }
+    case SAVE_STASH:
+      alert('贮藏成功!')
+      return state
     case PULL:
       alert('拉取成功!')
       return state
@@ -316,6 +321,9 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case LOAD_ALL_COMMITS_FAIL:
+      alert(action.msg)
+      return state
+    case SAVE_STASH_FAIL:
       alert(action.msg)
       return state
     default:

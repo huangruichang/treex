@@ -10,6 +10,7 @@ import {
   openCheckoutRemoteBranch,
   openPullPage,
   openPushPage,
+  openModalStash,
 } from '../../actions'
 
 require('!style!css!sass!../common.scss')
@@ -40,6 +41,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onPushPageClick: (projectName) => {
       dispatch(openPushPage(projectName))
+    },
+    onStashClick: (projectName) => {
+      dispatch(openModalStash(projectName, -1, 'save'))
     },
   }
 }
@@ -127,6 +131,10 @@ export default class Repo extends Component {
     this.props.onPushPageClick(this.props.projectName)
   }
 
+  onStashClick() {
+    this.props.onStashClick(this.props.projectName)
+  }
+
   render() {
     let Page = this.props.page || <HisotryPage {...this.props}/>
     let $sidebar = this.props.repo?
@@ -175,7 +183,7 @@ export default class Repo extends Component {
             </div>
           </div>
           <div className={styles.group}>
-            <div className={styles.button}>
+            <div className={styles.button} onClick={::this.onStashClick}>
               <i className={'boxDot big'}></i>
               <div>暂存</div>
             </div>

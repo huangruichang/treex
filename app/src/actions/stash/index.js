@@ -134,3 +134,27 @@ export const popStash = (repo, index) => {
   }
 }
 
+export const SAVE_STASH = 'SAVE_STASH'
+export const SAVE_STASH_FAIL = 'SAVE_STASH_FAIL'
+export const saveStash = (repo, stashMessage = '', apply = false) => {
+  return dispatch => {
+    Helper.saveStash(repo, stashMessage).then(() => {
+      dispatch({
+        type: SAVE_STASH,
+      })
+      let windows = BrowserWindow.getAllWindows()
+      for (let win of windows) {
+        win.webContents.send('refresh.sidebar')
+      }
+      BrowserWindow.getFocusedWindow().close()
+      if (apply) {
+        return Helper.applyStash(repo, 0)
+      }
+    }).catch((e) => {
+      dispatch({
+        type: SAVE_STASH_FAIL,
+        msg: e,
+      })
+    })
+  }
+}

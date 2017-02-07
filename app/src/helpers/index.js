@@ -311,6 +311,10 @@ export const popStash = (repo, index) => {
   return Stash.pop(repo, +index)
 }
 
+export const saveStash = (repo, stashMessage) => {
+  return Stash.save(repo, repo.defaultSignature(), stashMessage, 0)
+}
+
 export const openRepo = (projectName) => {
   const result = db.get('projects').find({ name: projectName }).value()
   const dirPath = result.path
