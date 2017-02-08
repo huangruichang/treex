@@ -18,6 +18,7 @@ import {
   PushPage,
   ClonePage,
   TagHistoryPage,
+  SearchHistoryPage,
 } from './containers'
 import { listProject, refreshSideBar } from './actions'
 
@@ -40,6 +41,7 @@ const component = (
     }}/>
     <Route path="/repo/:project" component={Repo}>
       <Route path="history" components={{ page: HistoryPage }}/>
+      <Route path="search" components={{ page: SearchHistoryPage }}/>
       <Route path="fileState(/:action)" components={{ page: FileStatePage }}/>
       <Route path="tags/:tag" components={{ page: TagHistoryPage }}/>
       <Route path="branches/:branch" components={{ page: BranchHistoryPage }}/>

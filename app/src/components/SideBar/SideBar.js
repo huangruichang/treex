@@ -97,7 +97,10 @@ export default class SideBar extends Component {
                 activeClassName={styles.active}>
             历史
           </Link>
-          <div className={styles.subTitle}>搜索</div>
+          <Link className={styles.subTitle} to={`/repo/${this.props.params.project}/search`}
+                activeClassName={styles.active}>
+            搜索
+          </Link>
         </div>
         <div className={`${styles.item} ${!this.isShowLocalBranches? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>

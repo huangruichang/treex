@@ -54,6 +54,11 @@ import {
   INIT_TAG_HISTORY_PAGE_FAIL,
   LOAD_ALL_COMMITS,
   LOAD_ALL_COMMITS_FAIL,
+  INIT_SEARCH_HISTORY_PAGE,
+  SEARCH_HISTORIES,
+  SEARCH_HISTORIES_FAIL,
+  APPEND_SEARCH_HISTORIES,
+  APPEND_SEARCH_HISTORIES_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -245,6 +250,27 @@ export default (state = initalState, action) => {
         ...state,
         histories: action.histories,
       }
+    case INIT_SEARCH_HISTORY_PAGE:
+      return {
+        ...state,
+        histories: action.histories,
+        commitDiffFiles: action.commitDiffFiles,
+        diffPatches: action.diffPatches,
+        commitInfo: action.commitInfo,
+      }
+    case SEARCH_HISTORIES:
+      return {
+        ...state,
+        histories: action.histories,
+        commitDiffFiles: action.commitDiffFiles,
+        diffPatches: action.diffPatches,
+        commitInfo: action.commitInfo,
+      }
+    case APPEND_SEARCH_HISTORIES:
+      return {
+        ...state,
+        histories: action.histories,
+      }
     case SAVE_STASH:
       alert('贮藏成功!')
       return state
@@ -324,6 +350,12 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case SAVE_STASH_FAIL:
+      alert(action.msg)
+      return state
+    case SEARCH_HISTORIES_FAIL:
+      alert(action.msg)
+      return state
+    case APPEND_SEARCH_HISTORIES_FAIL:
       alert(action.msg)
       return state
     default:

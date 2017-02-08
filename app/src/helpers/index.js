@@ -228,7 +228,29 @@ export const getCommitInfo = (repo, commitId) => {
   })
 }
 
-export const getHistories = (commit, historiesLimit) => {
+export const searchHistories = (commit, historiesLimit, keyword, type) => {
+  const typeMap = {
+    msg: (commit) => {
+      return commit && commit.desc.indexOf(keyword) != -1
+    },
+    sha: (commit) => {
+      return commit && commit.commitId.indexOf(keyword) != -1
+    },
+    committer: (commit) => {
+      return commit && commit.author.indexOf(keyword) != -1
+    },
+  }
+
+  const filters = [
+    typeMap[type],
+  ]
+
+  return getHistories(commit, historiesLimit, { filters: filters })
+}
+
+export const getHistories = (commit, historiesLimit, query = {
+  filters: [],
+}) => {
   return new Promise((resolve, reject) => {
     //@todo make sorting extensible
     const eventEmitter = commit.history(Revwalk.SORT.TIME)
@@ -242,7 +264,15 @@ export const getHistories = (commit, historiesLimit) => {
           commitId: commit.id().toString(),
           date: commit.date().toString(),
         }
-        histories.push(history)
+        let passed = true
+        query.filters.map((filter) => {
+          if (filter && !filter(history)) {
+            passed = false
+          }
+        })
+        if (passed) {
+          histories.push(history)
+        }
       } else {
         if (!flag) {
           flag = true
