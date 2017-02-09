@@ -1,6 +1,13 @@
 
 import { remote } from 'electron'
 import { exec } from 'child_process'
+import { platform } from 'os'
+import low from 'lowdb'
+import fileAsync from 'lowdb/lib/file-async'
+
+const db = low('db.json', {
+  storage: fileAsync,
+})
 
 const BrowserWindow = remote.BrowserWindow
 
@@ -31,6 +38,19 @@ export const loadUser = () => {
         })
       })
     })
+  }
+}
+
+export const openTerminal = (projectName) => {
+  return () => {
+    let p = platform()
+    const result = db.get('projects').find({ name: projectName }).value()
+    const dirPath = result.path
+    if (p.indexOf('darwin') != -1) {
+      exec('open -a Terminal "`cd `' + dirPath + '"')
+    } else if (p.indexOf('win') != -1) {
+      exec('start cmd /k cd ' + dirPath)
+    }
   }
 }
 

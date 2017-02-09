@@ -11,6 +11,7 @@ import {
   openPullPage,
   openPushPage,
   openModalStash,
+  openTerminal,
 } from '../../actions'
 
 require('!style!css!sass!../common.scss')
@@ -44,6 +45,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onStashClick: (projectName) => {
       dispatch(openModalStash(projectName, -1, 'save'))
+    },
+    onTerminalClick: (projectName) => {
+      dispatch(openTerminal(projectName))
     },
   }
 }
@@ -135,6 +139,10 @@ export default class Repo extends Component {
     this.props.onStashClick(this.props.projectName)
   }
 
+  onTerminalClick() {
+    this.props.onTerminalClick(this.props.projectName)
+  }
+
   render() {
     let Page = this.props.page || <HisotryPage {...this.props}/>
     let $sidebar = this.props.repo?
@@ -192,7 +200,7 @@ export default class Repo extends Component {
             float: 'right',
             marginRight: 10,
           }}>
-            <div className={styles.button}>
+            <div className={styles.button} onClick={::this.onTerminalClick}>
               <i className={'terminal big'}></i>
               <div>终端</div>
             </div>
