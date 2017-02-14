@@ -75,6 +75,7 @@ export default class Repo extends Component {
   componentWillMount() {
     const { store, params } = this.props
     store.dispatch(loadRepo(params.project))
+    document.title = params.project
   }
 
   componentWillReceiveProps(nextProps) {
