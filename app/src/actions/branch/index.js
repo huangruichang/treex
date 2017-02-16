@@ -1,14 +1,9 @@
 
 import { remote } from 'electron'
-import low from 'lowdb'
-import { Repository, Reference } from 'nodegit'
-import fileAsync from 'lowdb/lib/file-async'
+import { Reference, Branch } from 'nodegit'
 import { join } from 'path'
 import * as Helper from '../../helpers'
-
-const db = low('db.json', {
-  storage: fileAsync,
-})
+import { closeFocuseWindow } from '../../actions'
 
 const BrowserWindow = remote.BrowserWindow
 
@@ -46,11 +41,9 @@ export const openCheckoutRemoteBranch = (project, branch) => {
 export const INIT_CHECKOUT_REMOTE_BRANCH_PAGE = 'INIT_CHECKOUT_REMOTE_BRANCH_PAGE'
 export const INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl = 'INIT_CHECKOUT_REMOTE_BRANCH_PAGE_FAIl'
 export const initCheckoutRemoteBranchPage = (projectName) => {
-  const result = db.get('projects').find({ name: projectName }).value()
-  const dirPath = result.path
   let repository
   return dispatch => {
-    Repository.open(dirPath).then((repo) => {
+    Helper.openRepo(projectName).then((repo) => {
       repository = repo
       return repo.getReferences(Reference.TYPE.LISTALL)
     }).then((arrayReference) => {
@@ -66,6 +59,7 @@ export const initCheckoutRemoteBranchPage = (projectName) => {
       })
     })
   }
+
 }
 
 export const checkoutRemoteBranch = (repo, branchName, branchFullName) => {
@@ -86,9 +80,7 @@ export const REFRESH_BRANCHES = 'REFRESH_BRANCHES'
 export const REFRESH_BRANCHES_FAIL = 'REFRESH_BRANCHES_FAIL'
 export const refreshBranches = (projectName) => {
   return dispatch => {
-    const result = db.get('projects').find({ name: projectName }).value()
-    const dirPath = result.path
-    Repository.open(dirPath).then((repo) => {
+    Helper.openRepo(projectName).then((repo) => {
       return repo.getReferences(Reference.TYPE.LISTALL)
     }).then((arrayReference) => {
       dispatch({
@@ -103,3 +95,102 @@ export const refreshBranches = (projectName) => {
     })
   }
 }
+
+export const openModalBranch = (project) => {
+  return () => {
+    let win = new BrowserWindow({
+      width: 600,
+      height: 270,
+    })
+    win.loadURL(`file:\/\/${join(__dirname, `index.html#\/branch\/${project}`)}`)
+  }
+}
+
+export const INIT_BRANCH_PAGE = 'INIT_BRANCH_PAGE'
+export const INIT_BRANCH_PAGE_FAIL = 'INIT_BRANCH_PAGE_FAIL'
+export const initBranchPage = (projectName) => {
+  return dispatch => {
+    let repository
+    let data = {}
+    Helper.openRepo(projectName).then((repo) => {
+      repository = repo
+      data.repo = repo
+      return Helper.getCurrentBranch(repo)
+    }).then((branch) => {
+      data.currentBranch = branch.toString()
+      return repository.getReferences(Reference.TYPE.LISTALL)
+    }).then((arrayReference) => {
+      data.branches = arrayReference.filter((reference) => {
+        return reference.name().indexOf('refs/heads') !== -1 ||
+          reference.name().indexOf('refs/remotes') !== -1
+      })
+      dispatch({
+        type: INIT_BRANCH_PAGE,
+        ...data,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: INIT_BRANCH_PAGE_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
+export const CREATE_BRANCH = 'CREATE_BRANCH'
+export const CREATE_BRANCH_FAIL = 'CREATE_BRANCH_FAIL'
+export const createBranch = (repo, branch, checkout = false) => {
+  return dispatch => {
+    repo.getHeadCommit().then((commit) => {
+      return repo.createBranch(branch, commit, false)
+    }).then(() => {
+      if (checkout) {
+        return Helper.checkoutBranch(repo, branch)
+      } else {
+        return Promise.resovle()
+      }
+    }).then(() => {
+      dispatch({
+        type: CREATE_BRANCH,
+      })
+      dispatch(closeFocuseWindow())
+    }).catch((e) => {
+      dispatch({
+        type: CREATE_BRANCH_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
+export const DELETE_BRANCH = 'DELETE_BRANCH'
+export const DELETE_BRANCH_FAIL = 'DELETE_BRANCH_FAIL'
+export const deleteBranch = (repo, branches = []) => {
+  return dispatch => {
+    let promises = []
+    branches.map((branch) => {
+      promises.push(repo.getBranch(branch))
+    })
+    Promise.all(promises).then((references) => {
+      references.map((reference) => {
+        Branch.delete(reference)
+      })
+      return repo.getReferences(Reference.TYPE.LISTALL)
+    }).then((arrayReference) => {
+      let branches = arrayReference.filter((reference) => {
+        return reference.name().indexOf('refs/heads') !== -1 ||
+          reference.name().indexOf('refs/remotes') !== -1
+      })
+      dispatch({
+        type: DELETE_BRANCH,
+        branches: branches,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: DELETE_BRANCH_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+

@@ -22,10 +22,6 @@ export default class HistoryList extends Component {
 
   constructor(props) {
     super(props)
-    // this.setState({
-    //   showLoadAll: true,
-    // })
-    // this.showLoadAll = true
     this.state = {
       showLoadAll: true,
     }

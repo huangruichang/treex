@@ -12,6 +12,7 @@ import {
   openPushPage,
   openModalStash,
   openTerminal,
+  openModalBranch,
 } from '../../actions'
 
 require('!style!css!sass!../common.scss')
@@ -48,6 +49,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onTerminalClick: (projectName) => {
       dispatch(openTerminal(projectName))
+    },
+    onBranchClick: (projectName) => {
+      dispatch(openModalBranch(projectName))
     },
   }
 }
@@ -102,7 +106,6 @@ export default class Repo extends Component {
   }
 
   getRemoteBranches(branches) {
-
     let _branchNames = []
 
     let remoteBranches = branches.filter((branch) => {
@@ -144,6 +147,10 @@ export default class Repo extends Component {
     this.props.onTerminalClick(this.props.projectName)
   }
 
+  onBranchClick() {
+    this.props.onBranchClick(this.props.projectName)
+  }
+
   render() {
     let Page = this.props.page || <HisotryPage {...this.props}/>
     let $sidebar = this.props.repo?
@@ -182,7 +189,7 @@ export default class Repo extends Component {
             </div>
           </div>
           <div className={styles.group}>
-            <div className={styles.button}>
+            <div className={styles.button} onClick={::this.onBranchClick}>
               <i className={'branch big'}></i>
               <div>分支</div>
             </div>

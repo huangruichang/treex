@@ -73,7 +73,10 @@ export const initSideBar = (repo) => {
       return repo.getReferences(Reference.TYPE.LISTALL)
     }).then((arrayReference) => {
       data.branches = arrayReference.filter((reference) => {
-        return reference.isBranch() === 1
+        // don't know why isBranch not work suddenly
+        // return reference.isBranch() === 1
+        return reference.name().indexOf('refs/heads') !== -1 ||
+            reference.name().indexOf('refs/remotes') !== -1
       })
       return Helper.getStashes(repo)
     }).then((stashes) => {

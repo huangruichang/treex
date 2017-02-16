@@ -59,6 +59,12 @@ import {
   SEARCH_HISTORIES_FAIL,
   APPEND_SEARCH_HISTORIES,
   APPEND_SEARCH_HISTORIES_FAIL,
+  INIT_BRANCH_PAGE,
+  INIT_BRANCH_PAGE_FAIL,
+  CREATE_BRANCH,
+  CREATE_BRANCH_FAIL,
+  DELETE_BRANCH,
+  DELETE_BRANCH_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -271,6 +277,19 @@ export default (state = initalState, action) => {
         ...state,
         histories: action.histories,
       }
+    case INIT_BRANCH_PAGE:
+      return {
+        ...state,
+        repo: action.repo,
+        currentBranch: action.currentBranch,
+        branches: action.branches,
+      }
+    case DELETE_BRANCH:
+      alert('删除成功!')
+      return {
+        ...state,
+        branches: action.branches,
+      }
     case SAVE_STASH:
       alert('贮藏成功!')
       return state
@@ -279,6 +298,9 @@ export default (state = initalState, action) => {
       return state
     case PUSH:
       alert('推送成功!')
+      return state
+    case CREATE_BRANCH:
+      alert('创建成功!')
       return state
     case LOAD_REPO_FAIL:
       alert(action.msg)
@@ -356,6 +378,15 @@ export default (state = initalState, action) => {
       alert(action.msg)
       return state
     case APPEND_SEARCH_HISTORIES_FAIL:
+      alert(action.msg)
+      return state
+    case INIT_BRANCH_PAGE_FAIL:
+      alert(action.msg)
+      return state
+    case CREATE_BRANCH_FAIL:
+      alert(action.msg)
+      return state
+    case DELETE_BRANCH_FAIL:
       alert(action.msg)
       return state
     default:

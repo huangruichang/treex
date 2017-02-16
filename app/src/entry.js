@@ -19,6 +19,7 @@ import {
   ClonePage,
   TagHistoryPage,
   SearchHistoryPage,
+  BranchPage,
 } from './containers'
 import { listProject, refreshSideBar } from './actions'
 
@@ -52,6 +53,7 @@ const component = (
     <Route path="/pull/:project" component={PullPage}/>
     <Route path="/push/:project" component={PushPage}/>
     <Route path="/clone" component={ClonePage}/>
+    <Route path="/branch/:project(/:action)" component={BranchPage}/>
   </Router>
 )
 

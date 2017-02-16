@@ -1,15 +1,9 @@
 
 import { remote } from 'electron'
-import low from 'lowdb'
-import { Repository, Reference, Branch, Checkout } from 'nodegit'
-import fileAsync from 'lowdb/lib/file-async'
+import { Reference, Branch, Checkout } from 'nodegit'
 import { join } from 'path'
 import * as Helper from '../../helpers'
 import { stageOnePatch } from '../stage'
-
-const db = low('db.json', {
-  storage: fileAsync,
-})
 
 const BrowserWindow = remote.BrowserWindow
 
@@ -17,13 +11,11 @@ export const INIT_PULL_PAGE = 'init_pull_page'
 export const INIT_PULL_PAGE_FAIL = 'init_pull_page_fail'
 
 export const initPullPage = (projectName) => {
-  const result = db.get('projects').find({ name: projectName }).value()
-  const dirPath = result.path
   let repository
   let branches
   let currentBranch
   return dispatch => {
-    Repository.open(dirPath).then((repo) => {
+    Helper.openRepo(projectName).then((repo) => {
       repository = repo
       return repo.getReferences(Reference.TYPE.LISTALL)
     }).then((arrayReference) => {

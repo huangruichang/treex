@@ -1,0 +1,50 @@
+
+@import "../CheckoutRemotePage/CheckoutRemotePage";
+
+.branchPage {
+  .navigator {
+    width: 100%;
+    height: 60px;
+    font-size: 0;
+    text-align: center;
+    background: #e8e9e8;
+    .item {
+      display: inline-block;
+      font-size: 12px;
+      width: 60px;
+      height: 60px;
+      text-decoration: none;
+      line-height: 60px;
+      color: #000;
+    }
+    .active {
+      background: #125fc8;
+      color: #fff;
+      outline: none;
+    }
+  }
+  .title {
+    font-size: 14px;
+    padding-left: 4px;
+  }
+  .branchList {
+    border: 1px solid #ddd;
+    margin: 4px;
+    padding: 4px;
+    border-radius: 4px;
+    .header {
+      width: 100%;
+      display: flex;
+      font-size: 12px;
+    }
+    .tableWrapper {
+      height: 60px;
+      overflow: auto;
+    }
+    .tableWrapper table {
+      width: 100%;
+      font-size: 12px;
+      border-collapse: collapse;
+    }
+  }
+}
