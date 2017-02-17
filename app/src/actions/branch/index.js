@@ -147,7 +147,7 @@ export const createBranch = (repo, branch, checkout = false) => {
       if (checkout) {
         return Helper.checkoutBranch(repo, branch)
       } else {
-        return Promise.resovle()
+        return Promise.resolve()
       }
     }).then(() => {
       dispatch({
