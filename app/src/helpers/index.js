@@ -10,6 +10,7 @@ import {
   Cred,
   Revwalk,
   Tag,
+  Submodule,
 } from 'nodegit'
 import DiffLineHelper from './DiffLine'
 import fileAsync from 'lowdb/lib/file-async'
@@ -403,4 +404,8 @@ export const getReferenceCommit = (repo, name) => {
 
 export const getCurrentBranch = (repo) => {
   return repo.getCurrentBranch()
+}
+
+export const lookupSubmodule = (repo, subName) => {
+  return Submodule.lookup(repo, subName)
 }

@@ -18,6 +18,7 @@ export default class SideBar extends Component {
     projectName: PropTypes.string.isRequired,
     stashes: PropTypes.array.isRequired,
     tags: PropTypes.array.isRequired,
+    submodules: PropTypes.array.isRequired,
   }
 
   constructor(props) {
@@ -26,6 +27,7 @@ export default class SideBar extends Component {
     this.isShowRemoteBranches = false
     this.isShowStashes = false
     this.isShowTags = false
+    this.isShowSubmodules = false
   }
 
   showLocalBranches() {
@@ -68,6 +70,16 @@ export default class SideBar extends Component {
     this.forceUpdate()
   }
 
+  showSubmodules() {
+    this.isShowSubmodules = true
+    this.forceUpdate()
+  }
+
+  hideSubmodules() {
+    this.isShowSubmodules = false
+    this.forceUpdate()
+  }
+
   handleRemoteBranches(remoteBranches) {
     return utils.getOrigins(remoteBranches)
   }
@@ -76,6 +88,10 @@ export default class SideBar extends Component {
     return () => {
       this.props.onCheckoutBranchClick(this.props.repo, branch)
     }
+  }
+
+  onSubmoduleClick(subName) {
+    this.props.onSubmoduleClick(this.props.projectName, subName)
   }
 
   render() {
@@ -225,13 +241,35 @@ export default class SideBar extends Component {
             })
           }
         </div>
-        {/*<div className={styles.item}>
+        <div className={`${styles.item} ${!this.isShowSubmodules? styles.hideSubTitle : ''}`}>
           <div className={styles.title}>
-            <div className={styles.icon}></div>
+            <div className={styles.icon}>
+              <i className={'treeFrame big'}></i>
+            </div>
             <span className={styles.text}>子模块</span>
+            <span
+              className={this.isShowSubmodules? styles.hoverShow : styles.hidden}
+              onClick={::this.hideSubmodules}
+            >隐藏</span>
+            <span
+              className={!this.isShowSubmodules? styles.hoverShow : styles.hidden}
+              onClick={::this.showSubmodules}
+            >显示</span>
+            {
+              this.props.submodules.map((obj, index) => {
+                return <div className={styles.subTitle} key={`sidebar-submodule-${index}`}>
+                  <span>{obj}</span>
+                  <span className={styles.hoverText}
+                        onClick={() => {
+                          this.onSubmoduleClick(obj)
+                        }}
+                  >打开</span>
+                </div>
+              })
+            }
           </div>
         </div>
-        <div className={styles.item}>
+        {/*<div className={styles.item}>
           <div className={styles.title}>
             <div className={styles.icon}></div>
             <span className={styles.text}>子树</span>

@@ -47,6 +47,7 @@ const component = (
       <Route path="tags/:tag" components={{ page: TagHistoryPage }}/>
       <Route path="branches/:branch" components={{ page: BranchHistoryPage }}/>
       <Route path="stashes/:index" components={{ page: StashDetailPage }}/>
+      <Route path="sub/:sub" components={{ page: HistoryPage }}/>
     </Route>
     <Route path="/checkout/remote/:project/:branch" component={CheckoutRemotePage}/>
     <Route path="/stash/:action/:project/:index" component={StashModalPage}/>

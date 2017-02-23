@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { hashHistory } from 'react-router'
 import { SideBar } from '../../components'
-import { loadRepo, initSideBar } from '../../actions'
+import { loadRepo, loadSubRepo, initSideBar } from '../../actions'
 import HisotryPage from '../HisotryPage/HistoryPage'
 import {
   checkoutBranch,
@@ -13,6 +13,7 @@ import {
   openModalStash,
   openTerminal,
   openModalBranch,
+  openSubmodule,
 } from '../../actions'
 
 require('!style!css!sass!../common.scss')
@@ -27,6 +28,7 @@ const mapStateToProps = (state) => {
     projectName: state.repo.projectName,
     stashes: state.repo.stashes,
     tags: state.repo.tags,
+    submodules: state.repo.submodules,
   }
 }
 
@@ -53,6 +55,9 @@ const mapDispatchToProps = (dispatch) => {
     onBranchClick: (projectName) => {
       dispatch(openModalBranch(projectName))
     },
+    onSubmoduleClick: (projectName, subName) => {
+      dispatch(openSubmodule(projectName, subName))
+    },
   }
 }
 
@@ -78,8 +83,13 @@ export default class Repo extends Component {
 
   componentWillMount() {
     const { store, params } = this.props
-    store.dispatch(loadRepo(params.project))
-    document.title = params.project
+    if (params.sub) {
+      store.dispatch(loadSubRepo(params.project, params.sub))
+      document.title = params.sub
+    } else {
+      store.dispatch(loadRepo(params.project))
+      document.title = params.project
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -163,8 +173,10 @@ export default class Repo extends Component {
         projectName={this.props.projectName}
         stashes={this.props.stashes}
         tags={this.props.tags}
+        submodules={this.props.submodules}
         onCheckoutBranchClick={this.props.onCheckoutBranchClick}
         onCheckoutRemoteBranchClick={this.props.onCheckoutRemoteBranchClick}
+        onSubmoduleClick={this.props.onSubmoduleClick}
       />
     :''
     return (
@@ -193,10 +205,10 @@ export default class Repo extends Component {
               <i className={'branch big'}></i>
               <div>分支</div>
             </div>
-            <div className={styles.button}>
+            {/*<div className={styles.button}>
               <i className={'merge big'}></i>
               <div>合并</div>
-            </div>
+            </div>*/}
           </div>
           <div className={styles.group}>
             <div className={styles.button} onClick={::this.onStashClick}>

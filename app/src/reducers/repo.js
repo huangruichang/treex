@@ -65,6 +65,8 @@ import {
   CREATE_BRANCH_FAIL,
   DELETE_BRANCH,
   DELETE_BRANCH_FAIL,
+  LOAD_SUB_REPO,
+  LOAD_SUB_REPO_FAIL,
 } from '../actions'
 
 const initalState = {
@@ -88,11 +90,18 @@ const initalState = {
   progress: 0,
   tags: [],
   tagCommit: undefined,
+  submodules: [],
 }
 
 export default (state = initalState, action) => {
   switch (action.type) {
     case LOAD_REPO:
+      return {
+        ...state,
+        repo: action.repo,
+        projectName: action.projectName,
+      }
+    case LOAD_SUB_REPO:
       return {
         ...state,
         repo: action.repo,
@@ -122,6 +131,7 @@ export default (state = initalState, action) => {
         branches: action.branches,
         stashes: action.stashes,
         tags: action.tags,
+        submodules: action.submodules,
       }
     case LOAD_COMMIT_DIFF_FILES:
       return {
@@ -303,6 +313,9 @@ export default (state = initalState, action) => {
       alert('创建成功!')
       return state
     case LOAD_REPO_FAIL:
+      alert(action.msg)
+      return state
+    case LOAD_SUB_REPO_FAIL:
       alert(action.msg)
       return state
     case INIT_SIDEBAR_FAILED:

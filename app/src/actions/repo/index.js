@@ -40,6 +40,30 @@ export const loadRepo = (projectName) => {
   }
 }
 
+export const LOAD_SUB_REPO = 'LOAD_SUB_REPO'
+export const LOAD_SUB_REPO_FAIL = 'LOAD_SUB_REPO_FAIL'
+
+export const loadSubRepo = (projectName, subName) => {
+  return dispatch => {
+    Helper.openRepo(projectName).then((repo) => {
+      return Helper.lookupSubmodule(repo, subName)
+    }).then((submodule) => {
+      return submodule.open()
+    }).then((repo) => {
+      dispatch({
+        type: LOAD_SUB_REPO,
+        repo: repo,
+        projectName: subName,
+      })
+    }).catch((e) => {
+      dispatch({
+        type: LOAD_SUB_REPO_FAIL,
+        msg: e,
+      })
+    })
+  }
+}
+
 export const openRepo = (projectName) => {
   let win = new BrowserWindow({
     width: 1048,
@@ -84,6 +108,9 @@ export const initSideBar = (repo) => {
       return Helper.listTags(repo)
     }).then((tags) => {
       data.tags = tags
+      return repo.getSubmoduleNames()
+    }).then((submodules) => {
+      data.submodules = submodules
       dispatch({
         type: INIT_SIDEBAR,
         ...data,
@@ -103,3 +130,16 @@ export const refreshSideBar = (projectName, store) => {
   })
 }
 
+export const openSubmodule = (projectName, subName) => {
+  return () => {
+    let win = new BrowserWindow({
+      width: 1048,
+      height: 604,
+    })
+    win.on('closed', () => {
+      win = null
+    })
+    win.loadURL(`file:\/\/${join(__dirname, `index.html#\/repo\/${projectName}\/sub\/${subName}`)}`)
+    win.show()
+  }
+}
