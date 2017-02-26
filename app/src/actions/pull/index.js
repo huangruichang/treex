@@ -4,6 +4,7 @@ import { Reference, Branch, Checkout } from 'nodegit'
 import { join } from 'path'
 import * as Helper from '../../helpers'
 import { stageOnePatch } from '../stage'
+import { VALIDATING } from '../common'
 
 const BrowserWindow = remote.BrowserWindow
 
@@ -54,9 +55,9 @@ export const openPullPage = (project) => {
 
 export const PULL = 'PULL'
 export const PULL_FAIL = 'PULL_FAIL'
-export const pull = (repo, origin, branch) => {
+export const pull = (repo, origin, branch, userName, password) => {
   return (dispatch) => {
-    Helper.pull(repo, origin, branch).then(() => {
+    Helper.pull(repo, origin, branch, userName, password).then(() => {
       return Helper.getStagedPatches(repo)
     }).then((patches) => {
       // clear all staged files;
@@ -78,10 +79,16 @@ export const pull = (repo, origin, branch) => {
         type: PULL,
       })
     }).catch((e) => {
-      dispatch({
-        type: PULL_FAIL,
-        msg: e,
-      })
+      if (e.toString().indexOf('invalid cred') != -1) {
+        dispatch({
+          type: VALIDATING,
+        })
+      } else {
+        dispatch({
+          type: PULL_FAIL,
+          msg: e,
+        })
+      }
     })
   }
 }

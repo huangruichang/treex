@@ -1,9 +1,10 @@
 
 import { remote } from 'electron'
 import low from 'lowdb'
-import { Repository, Clone } from 'nodegit'
+import { Repository, Clone, Cred } from 'nodegit'
 import fileAsync from 'lowdb/lib/file-async'
 import { join } from 'path'
+import { VALIDATING } from '../common'
 
 const db = low('db.json', {
   storage: fileAsync,
@@ -24,7 +25,7 @@ export const openClonePage = () => {
 export const CLONE = 'CLONE'
 export const CLONE_SUCCESS = 'CLONE_SUCCESS'
 export const CLONE_FAIL = 'CLONE_FAIL'
-export const clone = (repoUrl, path) => {
+export const clone = (repoUrl, path, userName, password) => {
   return dispatch => {
     const opts = {
       fetchOpts: {
@@ -37,15 +38,28 @@ export const clone = (repoUrl, path) => {
               progress: progress,
             })
           },
+          credentials: () => {
+            if (userName && password) {
+              return Cred.userpassPlaintextNew(userName, password)
+            } else {
+              return Cred.defaultNew()
+            }
+          },
         },
       },
     }
 
     Clone(repoUrl, path, opts).catch((e) => {
-      dispatch({
-        type: CLONE_FAIL,
-        msg: e,
-      })
+      if (e.toString().indexOf('invalid cred') != -1) {
+        dispatch({
+          type: VALIDATING,
+        })
+      } else {
+        dispatch({
+          type: CLONE_FAIL,
+          msg: e,
+        })
+      }
     }).done((repo) => {
       if (repo instanceof Repository) {
         db.get('projects').push({
@@ -54,11 +68,6 @@ export const clone = (repoUrl, path) => {
         }).value()
         dispatch({
           type: CLONE_SUCCESS,
-        })
-      } else {
-        dispatch({
-          type: CLONE_FAIL,
-          msg: 'Something borked :(',
         })
       }
     })

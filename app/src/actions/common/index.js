@@ -60,3 +60,12 @@ export const closeFocuseWindow = () => {
   }
 }
 
+export const VALIDATING = 'VALIDATING'
+export const VALIDATING_END = 'VALIDATING_END'
+export const endValidating = () => {
+  return dispatch => {
+    dispatch({
+      type: VALIDATING_END,
+    })
+  }
+}

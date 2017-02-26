@@ -3,6 +3,7 @@ import { remote } from 'electron'
 import { Reference, Branch } from 'nodegit'
 import { join } from 'path'
 import * as Helper from '../../helpers'
+import { VALIDATING } from '../common'
 
 const BrowserWindow = remote.BrowserWindow
 
@@ -62,19 +63,40 @@ export const openPushPage = (project) => {
   }
 }
 
+const _push = (repo, origin, branches, userName, password) => {
+  return new Promise((resolve, reject) => {
+    Helper.push(repo, origin, branches, userName, password).then(() => {
+      resolve()
+    }).catch((e) => {
+      if (e.toString().indexOf('invalid cred') != -1) {
+        resolve(VALIDATING)
+      } else {
+        reject(e)
+      }
+    })
+  })
+}
+
 export const PUSH = 'PUSH'
 export const PUSH_FAIL = 'PUSH_FAIL'
-export const push = (repo, origin, branches) => {
+export const push = (repo, origin, branches, userName, password) => {
   return dispatch => {
-    Helper.push(repo, origin, branches).then(() => {
-      dispatch({
-        type: PUSH,
-      })
+    _push(repo, origin, branches, userName, password).then((result) => {
+      if (result === VALIDATING) {
+        dispatch({
+          type: VALIDATING,
+        })
+      } else {
+        dispatch({
+          type: PUSH,
+        })
+      }
     }).catch((e) => {
       dispatch({
         type: PUSH_FAIL,
         msg: e,
       })
     })
+
   }
 }

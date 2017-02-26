@@ -1,10 +1,12 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { CredModal } from '../../components'
 import {
   closeFocuseWindow,
   findClonePath,
   clone,
+  endValidating,
 } from '../../actions'
 
 require('!style!css!sass!../common.scss')
@@ -15,6 +17,7 @@ const mapStateToProps = (state) => {
     cloneFilePath: state.repo.cloneFilePath,
     cloneProjectName: state.repo.cloneProjectName,
     progress: state.repo.progress,
+    validating: state.repo.validating,
   }
 }
 
@@ -23,11 +26,14 @@ const mapDispatchToProps = (dispatch) => {
     onCancelClick: () => {
       dispatch(closeFocuseWindow())
     },
-    onSubmitClick: (repoUrl, path) => {
-      dispatch(clone(repoUrl, path))
+    onSubmitClick: (repoUrl, path, userName, password) => {
+      dispatch(clone(repoUrl, path, userName, password))
     },
     onFindClick: () => {
       dispatch(findClonePath())
+    },
+    endValidating: () => {
+      dispatch(endValidating())
     },
   }
 }
@@ -43,10 +49,12 @@ export default class ClonePage extends Component {
     this.cloneFilePath = ''
     this.cloneProjectName = ''
     this.sourcePath = ''
+    this.userName = ''
+    this.password = ''
   }
 
   onSubmitClick() {
-    this.props.onSubmitClick(this.sourcePath, this.cloneFilePath)
+    this.props.onSubmitClick(this.sourcePath, this.cloneFilePath, this.userName, this.password)
   }
 
   render() {
@@ -55,6 +63,22 @@ export default class ClonePage extends Component {
       this.cloneFilePath = this.props.cloneFilePath
       this.cloneProjectName = this.props.cloneProjectName
     }
+
+    let $credModal = this.props.validating?<CredModal
+      onConfirmCallback={() => {
+        this.props.endValidating()
+        this.onSubmitClick()
+      }}
+      userNameSetter={(userName) => {
+        this.userName = userName
+      }}
+      passwordSetter={(password) => {
+        this.password = password
+      }}
+      onCloseCallback={() => {
+        this.props.endValidating()
+      }}
+    />:''
 
     return (
       <form className={styles.form} onSubmit={() => { return false }}>
@@ -83,6 +107,7 @@ export default class ClonePage extends Component {
             this.onSubmitClick(e)
           }}>确定</div>
         </div>
+        {$credModal}
       </form>
     )
   }

@@ -67,6 +67,8 @@ import {
   DELETE_BRANCH_FAIL,
   LOAD_SUB_REPO,
   LOAD_SUB_REPO_FAIL,
+  VALIDATING,
+  VALIDATING_END,
 } from '../actions'
 
 const initalState = {
@@ -91,6 +93,7 @@ const initalState = {
   tags: [],
   tagCommit: undefined,
   submodules: [],
+  validating: false,
 }
 
 export default (state = initalState, action) => {
@@ -299,6 +302,16 @@ export default (state = initalState, action) => {
       return {
         ...state,
         branches: action.branches,
+      }
+    case VALIDATING:
+      return {
+        ...state,
+        validating: true,
+      }
+    case VALIDATING_END:
+      return {
+        ...state,
+        validating: false,
       }
     case SAVE_STASH:
       alert('贮藏成功!')

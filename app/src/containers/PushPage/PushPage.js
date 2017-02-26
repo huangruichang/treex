@@ -1,10 +1,12 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { CredModal } from '../../components'
 import {
   initPushPage,
   push,
   closeFocuseWindow,
+  endValidating,
 } from '../../actions'
 import utils from '../../helpers/utils'
 
@@ -18,6 +20,7 @@ const mapStateToProps = (state) => {
     currentBranch: state.repo.currentBranch,
     currentOrigin: state.repo.currentOrigin,
     remotes: state.repo.remotes,
+    validating: state.repo.validating,
   }
 }
 
@@ -26,8 +29,11 @@ const mapDispatchToProps = (dispatch) => {
     onCancelClick: () => {
       dispatch(closeFocuseWindow())
     },
-    onSubmitClick: (repo, origin, branches) => {
-      dispatch(push(repo, origin, branches))
+    onSubmitClick: (repo, origin, branches, userName, password) => {
+      dispatch(push(repo, origin, branches, userName, password))
+    },
+    endValidating: () => {
+      dispatch(endValidating())
     },
   }
 }
@@ -44,6 +50,8 @@ export default class PushPage extends Component {
     this.selectedOrigin = ''
     this.selectedBranch = ''
     this.selectedBranches = []
+    this.userName = ''
+    this.password = ''
   }
 
   componentWillMount() {
@@ -90,7 +98,7 @@ export default class PushPage extends Component {
   }
 
   onSubmitClick() {
-    this.props.onSubmitClick(this.props.repo, this.selectedOrigin, this.selectedBranches)
+    this.props.onSubmitClick(this.props.repo, this.selectedOrigin, this.selectedBranches, this.userName, this.password)
   }
 
   isSelected(branches, branch) {
@@ -110,6 +118,21 @@ export default class PushPage extends Component {
     let origins = utils.getOrigins(remoteBranches)
     let defaultBranch = this.getSelectedDefaultBranch(localBranches, this.props.currentBranch && this.props.currentBranch.name())
     let defaultOrigin = this.getSelectedDefaultOrigin(origins, this.props.currentOrigin && this.props.currentOrigin.name())
+    let $credModal = this.props.validating?<CredModal
+      onConfirmCallback={() => {
+        this.props.endValidating()
+        this.onSubmitClick()
+      }}
+      userNameSetter={(userName) => {
+        this.userName = userName
+      }}
+      passwordSetter={(password) => {
+        this.password = password
+      }}
+      onCloseCallback={() => {
+        this.props.endValidating()
+      }}
+    />:''
 
     if (!(this.selectedOrigin && this.selectedBranch)) {
       this.selectedOrigin = defaultOrigin.origin
@@ -189,6 +212,7 @@ export default class PushPage extends Component {
           <div className={`${styles.button} ${styles.cancel}`} onClick={this.props.onCancelClick}>取消</div>
           <div className={`${styles.button} ${styles.submit}`} onClick={::this.onSubmitClick}>确定</div>
         </div>
+        {$credModal}
       </form>
     )
   }

@@ -352,11 +352,15 @@ export const openRepo = (projectName) => {
   return Repository.open(dirPath)
 }
 
-export const pull = (repo, origin, branch) => {
+export const pull = (repo, origin, branch, userName, password) => {
   return repo.fetch(origin, {
     callbacks: {
-      credentials: (url, userName) => {
-        return Cred.sshKeyFromAgent(userName)
+      credentials: (url, un) => {
+        if (userName && password) {
+          return Cred.userpassPlaintextNew(userName, password)
+        } else {
+          return Cred.sshKeyFromAgent(un)
+        }
       },
       certificateCheck: () => {
         return 1
@@ -367,7 +371,7 @@ export const pull = (repo, origin, branch) => {
   })
 }
 
-export const push = (repo, origin, branches) => {
+export const push = (repo, origin, branches, userName, password) => {
   return repo.getRemote(origin).then((remote) => {
     let refs = []
     branches.map((branch) => {
@@ -377,8 +381,11 @@ export const push = (repo, origin, branches) => {
       refs,
       {
         callbacks: {
-          credentials: function (url, userName) {
-            return Cred.sshKeyFromAgent(userName)
+          credentials: function (url, un) {
+            if (userName && password) {
+              return Cred.userpassPlaintextNew(userName, password)
+            }
+            return Cred.sshKeyFromAgent(un)
           },
         },
       },

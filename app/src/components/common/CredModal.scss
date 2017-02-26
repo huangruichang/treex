@@ -1,0 +1,69 @@
+
+.credModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%,-50%);
+  -moz-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  height: 140px;
+  width: 360px;
+  .form {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    .formGroup{
+      height: 30px;
+      .label {
+        font-size: 12px;
+        margin-right: 5px;
+      }
+      .input {
+        outline: none;
+        padding: 2px;
+        border: 1px solid #ddd;
+        border-radius: 2px;
+      }
+    }
+    .buttonGroup {
+      text-align: right;
+      font-size: 12px;
+      margin-top: 10px;
+      .button {
+        display: inline-block;
+        border: 1px solid #999;
+        padding: 2px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .cancel {
+        margin: 6px 5px;
+        background: #fff;
+      }
+      .submit {
+        color: #fff;
+        background: #125fc8;
+      }
+    }
+  }
+  .container {
+    .closer {
+      &:hover {
+        color: #999;
+      }
+      position: absolute;
+      right: 4px;
+      top: 0;
+      cursor: pointer;
+      color: #ddd;
+    }
+  }
+}
