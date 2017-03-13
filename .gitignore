@@ -2,3 +2,4 @@
 node_modules/
 app/dist
 app/node_modules/
+npm-debug.log
