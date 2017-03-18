@@ -4,8 +4,9 @@ import { exec } from 'child_process'
 import { platform } from 'os'
 import low from 'lowdb'
 import fileAsync from 'lowdb/lib/file-async'
+import { DB_PATH } from '../../helpers/constant'
 
-const db = low('db.json', {
+const db = low(DB_PATH, {
   storage: fileAsync,
 })
 

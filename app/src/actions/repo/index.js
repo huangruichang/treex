@@ -5,8 +5,9 @@ import { Repository, Diff, Reference } from 'nodegit'
 import fileAsync from 'lowdb/lib/file-async'
 import { join } from 'path'
 import * as Helper from '../../helpers'
+import { DB_PATH } from '../../helpers/constant'
 
-const db = low('db.json', {
+const db = low(DB_PATH, {
   storage: fileAsync,
 })
 

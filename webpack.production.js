@@ -66,6 +66,9 @@ module.exports = {
       from: resolve(appDir, 'index.html'),
       to: 'index.html'
     }, {
+      from: resolve(appDir, 'assets/logo/'),
+      to: 'assets/logo/'
+    }, {
       from: resolve(appDir, '../package.json'),
       to: 'package.json'
     }, {
@@ -76,7 +79,7 @@ module.exports = {
       Promise: 'bluebird',
     }),
     new webpack.DefinePlugin({
-      __DEVTOOLS__: true,  // <-------- DISABLE redux-devtools HERE
+      __DEVTOOLS__: false,  // <-------- DISABLE redux-devtools HERE
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       }

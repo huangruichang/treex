@@ -65,6 +65,9 @@ module.exports = {
     new CopyWebpackPlugin([{
       from: resolve(appDir, 'index.html'),
       to: 'index.html'
+    }, {
+      from: resolve(appDir, 'assets/logo/'),
+      to: 'assets/logo/'
     }]),
     new webpack.ProvidePlugin({
       Promise: 'bluebird',

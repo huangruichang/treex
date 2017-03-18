@@ -14,8 +14,9 @@ import {
 } from 'nodegit'
 import DiffLineHelper from './DiffLine'
 import fileAsync from 'lowdb/lib/file-async'
+import { DB_PATH } from './constant'
 
-const db = low('db.json', {
+const db = low(DB_PATH, {
   storage: fileAsync,
 })
 

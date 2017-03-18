@@ -24,5 +24,6 @@
   },
   "engines": {
     "electron": "1.1.1"
-  }
+  },
+  "productName": "treex"
 }

@@ -4,6 +4,7 @@ import low from 'lowdb'
 import { Repository } from 'nodegit'
 import fileAsync from 'lowdb/lib/file-async'
 import { join } from 'path'
+import { DB_PATH } from '../../helpers/constant'
 
 export const REMOVE_PROJECT = 'REMOVE_PROJECT'
 export const LIST_PROJECT = 'LIST_PROJECT'
@@ -12,7 +13,7 @@ export const LOAD_PROJECT_FAIL = 'LOAD_PROJECT_FAIL'
 
 const BrowserWindow = remote.BrowserWindow
 
-const db = low('db.json', {
+const db = low(DB_PATH, {
   storage: fileAsync,
 })
 
@@ -39,10 +40,11 @@ export const findProject = () => {
           })
           dispatch(listProject())
           let win = new BrowserWindow({
-            width: 800,
-            height: 600,
+            width: 1048,
+            height: 604,
           })
-          win.loadURL(`file:\/\/${join(__dirname, `index.html#\/${projectName}`)}`)
+
+          win.loadURL(`file:\/\/${join(__dirname, `index.html#\/repo\/${projectName}/history`)}`)
           win.show()
         }).catch((e) => {
           dispatch({
