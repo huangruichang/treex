@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack -w --progress --config webpack.config.js",
     "open:dist": "cd ./app/dist && electron index.js",
-    "production": "cross-env NODE_ENV=production webpack -w --progress --config webpack.config.js"
+    "production": "cross-env NODE_ENV=production webpack --progress --config webpack.config.js"
   },
   "devDependencies": {
     "babel-core": "^6.5.2",

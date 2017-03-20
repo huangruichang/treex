@@ -61,6 +61,18 @@ export const findProject = () => {
   }
 }
 
+export const removeProject = (projectName) => {
+  return dispatch => {
+    db.get('projects')
+      .remove({ name: projectName })
+      .value()
+    dispatch({
+      type: REMOVE_PROJECT,
+    })
+    dispatch(listProject())
+  }
+}
+
 export const FIND_CLONE_PATH = 'FIND_CLONE_PATH'
 export const findClonePath = () => {
   return dispatch => {

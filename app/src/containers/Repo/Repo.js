@@ -224,10 +224,10 @@ export default class Repo extends Component {
               <i className={'terminal big'}></i>
               <div>终端</div>
             </div>
-            <div className={styles.button}>
+            {/*<div className={styles.button}>
               <i className={'setting big'}></i>
               <div>设置</div>
-            </div>
+            </div>*/}
           </div>
         </div>
         <div className={styles.main}>

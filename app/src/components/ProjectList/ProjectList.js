@@ -8,6 +8,7 @@ export default class ProjectList extends Component {
 
   static propTypes = {
     onItemClick: PropTypes.func.isRequired,
+    onCloseClick: PropTypes.func.isRequired,
     projects: PropTypes.array.isRequired,
   }
 
@@ -19,7 +20,12 @@ export default class ProjectList extends Component {
     return (
       <div className={styles.projectList}>
         {this.props.projects.map((obj, index) => {
-          return <ProjectItem name={obj.name} key={index} onClick={() => { this.props.onItemClick(obj.name) }} />
+          return <ProjectItem
+            name={obj.name}
+            key={index}
+            onClick={() => { this.props.onItemClick(obj.name) }}
+            onCloseClick={(e) => {this.props.onCloseClick(e, obj.name)}}
+          />
         })}
       </div>
     )

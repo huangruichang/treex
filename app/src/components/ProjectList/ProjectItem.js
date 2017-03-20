@@ -8,6 +8,7 @@ export default class ProjectItem extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
+    onCloseClick: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -20,6 +21,7 @@ export default class ProjectItem extends Component {
         <div className={styles.left}>
           <i className={`txIcon bucket ${styles.bucket}`} />
           <div>{ this.props.name }</div>
+          <div className={styles.closer} onClick={this.props.onCloseClick}>移除</div>
         </div>
       </div>
     )
