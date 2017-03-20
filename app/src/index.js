@@ -1,5 +1,5 @@
 
-import { app, BrowserWindow, nativeImage, Menu, globalShortcut } from 'electron'
+import { app, BrowserWindow, nativeImage, Menu } from 'electron'
 import { join, resolve } from 'path'
 import createMenu from './helpers/menu'
 
@@ -19,10 +19,6 @@ app.on('ready', () => {
 
   let menu = Menu.buildFromTemplate(createMenu(app))
   Menu.setApplicationMenu(menu)
-
-  globalShortcut.register('CommandOrControl+R', () => {
-    BrowserWindow.getFocusedWindow().reload()
-  })
 })
 
 app.on('window-all-closed', () => {

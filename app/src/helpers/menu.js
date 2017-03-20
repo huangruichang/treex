@@ -8,6 +8,7 @@ const createMenu = (app) => {
       submenu: [
         {
           label: '重新加载',
+          accelerator: 'CmdOrCtrl+R',
           click: () => {
             BrowserWindow.getFocusedWindow().reload()
           },
