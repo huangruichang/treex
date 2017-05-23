@@ -9,6 +9,8 @@ app.dock.setIcon(icon)
 
 app.on('ready', () => {
 
+  require('devtron').install()
+
   const win = new BrowserWindow({
     width: 480,
     height: 622,

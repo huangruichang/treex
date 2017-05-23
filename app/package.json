@@ -25,5 +25,8 @@
   "engines": {
     "electron": "1.1.1"
   },
-  "productName": "treex"
+  "productName": "treex",
+  "devDependencies": {
+    "devtron": "^1.4.0"
+  }
 }
